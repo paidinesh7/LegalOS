@@ -4,7 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LegalOS Analysis — {{ analysis.document_name }}</title>
-    <style>{{ css }}</style>
+    <style>{{ css | safe }}</style>
+    <style>
+        /* Per-finding feedback buttons */
+        .finding-feedback { display: flex; gap: 6px; margin-top: 8px; }
+        .vote-btn {
+            border: 1px solid #d1d5db; background: #fff; border-radius: 6px;
+            padding: 4px 10px; cursor: pointer; font-size: 13px; transition: all 0.15s;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .vote-btn:hover { background: #f3f4f6; }
+        .vote-btn.voted-up { background: #dcfce7; border-color: #86efac; color: #166534; }
+        .vote-btn.voted-down { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+        /* Floating feedback bar */
+        .feedback-bar {
+            position: fixed; bottom: 0; left: 260px; right: 0;
+            background: #fff; border-top: 1px solid #e5e7eb;
+            padding: 10px 24px; display: flex; align-items: center;
+            justify-content: space-between; z-index: 100;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+        .feedback-bar .counter { font-size: 13px; color: #6b7280; }
+        .feedback-bar .export-btn {
+            background: #4f46e5; color: #fff; border: none; border-radius: 6px;
+            padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 500;
+        }
+        .feedback-bar .export-btn:hover { background: #4338ca; }
+        .feedback-bar .export-btn:disabled { background: #9ca3af; cursor: default; }
+    </style>
 </head>
 <body>
 
@@ -22,6 +49,12 @@
         {% if analysis.explainer.terms %}
         <a href="#explainer">Plain English Guide</a>
         {% endif %}
+        {% if analysis.feedback_insights %}
+        <a href="#feedback-learning">Learning from Feedback</a>
+        {% endif %}
+        {% if knowledge_entries %}
+        <a href="#knowledge-applied">Knowledge Applied</a>
+        {% endif %}
     </nav>
     <div class="risk-legend">
         <h3>Severity Legend</h3>
@@ -33,10 +66,18 @@
 </div>
 
 <!-- Main Content -->
-<div class="main">
+<div class="main" style="padding-bottom: 60px;">
     <div class="doc-header">
         <h1>{{ analysis.document_name }}</h1>
         <p class="doc-type">{{ analysis.document_type }}</p>
+        {% if profile %}
+        <div class="profile-summary" style="margin-top: 12px; padding: 12px 16px; background: #f0f4ff; border-radius: 8px; font-size: 14px; color: #334155;">
+            <strong>Profile:</strong>
+            {% if profile.company.name %}{{ profile.company.name }}{% endif %}
+            {% if profile.company.stage %} &middot; {{ profile.company.stage.value.replace('_', ' ').title() }}{% endif %}
+            {% if profile.risk_tolerance %} &middot; Risk tolerance: {{ profile.risk_tolerance.value }}{% endif %}
+        </div>
+        {% endif %}
     </div>
 
     <!-- Analysis Sections -->
@@ -50,7 +91,10 @@
 
         <div class="findings">
             {% for finding in section.findings %}
-            <div class="finding severity-{{ finding.severity.value }}">
+            <div class="finding severity-{{ finding.severity.value }}"
+                 data-section-id="{{ section.section_id }}"
+                 data-finding-index="{{ loop.index0 }}"
+                 data-finding-title="{{ finding.title | e }}">
                 <div class="finding-header">
                     <span class="finding-title">{{ finding.title }}</span>
                     <span class="finding-clause">{{ finding.clause_reference }}</span>
@@ -63,6 +107,10 @@
                     <p><strong>Explanation:</strong> {{ finding.explanation }}</p>
                     <p><strong>Founder Impact:</strong> {{ finding.founder_impact }}</p>
                     <p><strong>Recommendation:</strong> {{ finding.recommendation }}</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
                 </div>
             </div>
             {% endfor %}
@@ -155,10 +203,130 @@
     </div>
     {% endif %}
 
+    <!-- Learning from Feedback -->
+    {% if analysis.feedback_insights %}
+    <div class="section" id="feedback-learning">
+        <div class="section-header">
+            <h2>Learning from Feedback</h2>
+        </div>
+        <p class="section-summary">Insights applied from your previous feedback to improve this analysis.</p>
+
+        {% for insight in analysis.feedback_insights %}
+        <div class="finding" style="border-left: 3px solid #6366f1;">
+            <div class="finding-header">
+                <span class="finding-title">{{ insight.source }}</span>
+            </div>
+            <div class="finding-body">
+                <p>{{ insight.action }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Knowledge Applied -->
+    {% if knowledge_entries %}
+    <div class="section" id="knowledge-applied">
+        <div class="section-header">
+            <h2>Knowledge Applied</h2>
+        </div>
+        <p class="section-summary">Insights from your knowledge base that were relevant to this analysis.</p>
+
+        {% for entry in knowledge_entries %}
+        <div class="finding" style="border-left: 3px solid #6366f1;">
+            <div class="finding-header">
+                <span class="finding-title">{{ entry.title }}</span>
+                <span class="severity-tag" style="background:#eef2ff;color:#4338ca;padding:2px 8px;border-radius:4px;font-size:12px;">{{ entry.category.value | replace('_', ' ') | title }}</span>
+            </div>
+            <div class="finding-body">
+                <p>{{ entry.insight }}</p>
+                {% if entry.tags %}
+                <p style="font-size:12px;color:#6b7280;">Tags: {{ entry.tags | join(', ') }}</p>
+                {% endif %}
+                {% if entry.document_name %}
+                <p style="font-size:12px;color:#6b7280;">Source: {{ entry.document_name }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
         Generated by LegalOS. This analysis is AI-generated and should not be treated as legal advice. Always consult with a qualified lawyer.
     </div>
 </div>
+
+<!-- Floating feedback bar -->
+<div class="feedback-bar" id="feedbackBar" style="display: none;">
+    <span class="counter" id="voteCounter">0 findings rated</span>
+    <button class="export-btn" onclick="exportFeedback()">Export Feedback JSON</button>
+</div>
+
+<script>
+(function() {
+    var votes = {};
+    var totalVotes = 0;
+    var docName = {{ analysis.document_name | tojson }};
+
+    window.vote = function(btn) {
+        var card = btn.closest('.finding');
+        var sectionId = card.dataset.sectionId;
+        var findingIndex = parseInt(card.dataset.findingIndex, 10);
+        var findingTitle = card.dataset.findingTitle;
+        var voteType = btn.dataset.vote;
+        var key = sectionId + ':' + findingIndex;
+
+        // Toggle off if already voted same way
+        var buttons = card.querySelectorAll('.vote-btn');
+        var wasActive = btn.classList.contains('voted-' + voteType);
+
+        buttons.forEach(function(b) {
+            b.classList.remove('voted-up', 'voted-down');
+        });
+
+        if (wasActive) {
+            delete votes[key];
+        } else {
+            btn.classList.add('voted-' + voteType);
+            votes[key] = {
+                section_id: sectionId,
+                finding_index: findingIndex,
+                finding_title: findingTitle,
+                vote: voteType
+            };
+        }
+
+        totalVotes = Object.keys(votes).length;
+        var bar = document.getElementById('feedbackBar');
+        var counter = document.getElementById('voteCounter');
+        if (totalVotes > 0) {
+            bar.style.display = 'flex';
+            counter.textContent = totalVotes + ' finding' + (totalVotes === 1 ? '' : 's') + ' rated';
+        } else {
+            bar.style.display = 'none';
+        }
+    };
+
+    window.exportFeedback = function() {
+        var payload = {
+            document_name: docName,
+            timestamp: new Date().toISOString(),
+            votes: Object.values(votes)
+        };
+        var json = JSON.stringify(payload, null, 2);
+        var blob = new Blob([json], {type: 'application/json'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'legalos_feedback_' + docName.replace(/[^a-zA-Z0-9]/g, '_') + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+})();
+</script>
 
 </body>
 </html>

@@ -91,6 +91,13 @@ class ImpactOutput(BaseModel):
     top_negotiation_items: list[NegotiationItem] = Field(default_factory=list)
 
 
+class FeedbackInsight(BaseModel):
+    """An insight derived from past founder feedback."""
+
+    source: str = Field(description="What feedback this came from")
+    action: str = Field(description="What extra attention was given as a result")
+
+
 class RedlineComment(BaseModel):
     """A single redline comment to anchor to the document."""
 
@@ -116,3 +123,4 @@ class FullAnalysis(BaseModel):
     sections: list[AnalysisSection] = Field(default_factory=list)
     explainer: ExplainerOutput = Field(default_factory=ExplainerOutput)
     impact: Optional[ImpactOutput] = None
+    feedback_insights: list[FeedbackInsight] = Field(default_factory=list)

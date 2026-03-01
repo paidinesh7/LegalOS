@@ -14,3 +14,4 @@ venv/
 *.html
 !src/legalos/report/templates/report.html
 output/
+.legalos/
