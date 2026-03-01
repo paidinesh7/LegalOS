@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.env
+.venv/
+venv/
+*.so
+.mypy_cache/
+.pytest_cache/
+*.html
+!src/legalos/report/templates/report.html
+output/

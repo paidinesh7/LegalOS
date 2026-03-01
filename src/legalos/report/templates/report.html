@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalOS Analysis — {{ analysis.document_name }}</title>
+    <style>{{ css }}</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h1>LegalOS</h1>
+    <p class="subtitle">Legal Document Analyzer</p>
+    <nav>
+        {% for section in analysis.sections %}
+        <a href="#{{ section.section_id }}">{{ section.section_name }}</a>
+        {% endfor %}
+        {% if analysis.impact %}
+        <a href="#impact">Impact Assessment</a>
+        {% endif %}
+        {% if analysis.explainer.terms %}
+        <a href="#explainer">Plain English Guide</a>
+        {% endif %}
+    </nav>
+    <div class="risk-legend">
+        <h3>Severity Legend</h3>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Standard</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Aggressive</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span> Unusual</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span> Missing</div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+    <div class="doc-header">
+        <h1>{{ analysis.document_name }}</h1>
+        <p class="doc-type">{{ analysis.document_type }}</p>
+    </div>
+
+    <!-- Analysis Sections -->
+    {% for section in analysis.sections %}
+    <div class="section" id="{{ section.section_id }}">
+        <div class="section-header">
+            <h2>{{ section.section_name }}</h2>
+            <span class="risk-badge risk-{{ section.risk_level }}">{{ section.risk_level }}</span>
+        </div>
+        <p class="section-summary">{{ section.summary }}</p>
+
+        <div class="findings">
+            {% for finding in section.findings %}
+            <div class="finding severity-{{ finding.severity.value }}">
+                <div class="finding-header">
+                    <span class="finding-title">{{ finding.title }}</span>
+                    <span class="finding-clause">{{ finding.clause_reference }}</span>
+                </div>
+                <span class="severity-tag tag-{{ finding.severity.value }}">{{ finding.severity.value }}</span>
+                {% if finding.quoted_text %}
+                <div class="finding-quote">{{ finding.quoted_text | truncate(300) }}</div>
+                {% endif %}
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> {{ finding.explanation }}</p>
+                    <p><strong>Founder Impact:</strong> {{ finding.founder_impact }}</p>
+                    <p><strong>Recommendation:</strong> {{ finding.recommendation }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Impact Assessment -->
+    {% if analysis.impact %}
+    <div class="section" id="impact">
+        <div class="section-header">
+            <h2>Impact Assessment</h2>
+        </div>
+
+        <div class="impact-dashboard">
+            {% set scores = analysis.impact.scores %}
+            {% for label, score, rationale in [
+                ('Control', scores.control_score, scores.control_rationale),
+                ('Economics', scores.economics_score, scores.economics_rationale),
+                ('Flexibility', scores.flexibility_score, scores.flexibility_rationale)
+            ] %}
+            <div class="score-card">
+                <h3>{{ label }}</h3>
+                <div class="score-value {% if score <= 3 %}score-low{% elif score <= 5 %}score-medium{% elif score <= 7 %}score-high{% else %}score-critical{% endif %}">
+                    {{ score }}/10
+                </div>
+                <p class="score-rationale">{{ rationale }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if analysis.impact.waterfall %}
+        <h3 style="margin-bottom: 12px;">Exit Waterfall</h3>
+        <table class="waterfall-table">
+            <thead>
+                <tr>
+                    <th>Exit Multiple</th>
+                    <th>Valuation</th>
+                    <th>Investor Gets</th>
+                    <th>Founder Gets</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in analysis.impact.waterfall %}
+                <tr>
+                    <td><strong>{{ row.exit_multiple }}</strong></td>
+                    <td>{{ row.exit_valuation }}</td>
+                    <td>{{ row.investor_gets }}</td>
+                    <td>{{ row.founder_gets }}</td>
+                    <td>{{ row.notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        {% if analysis.impact.top_negotiation_items %}
+        <h3 style="margin-bottom: 12px;">Top Negotiation Priorities</h3>
+        {% for item in analysis.impact.top_negotiation_items %}
+        <div class="negotiation-item">
+            <h4><span class="priority-badge">#{{ item.priority }}</span>{{ item.item }}</h4>
+            <p><strong>Current:</strong> {{ item.current_language }}</p>
+            <p><strong>Suggested:</strong> {{ item.suggested_change }}</p>
+            <p><strong>Why:</strong> {{ item.reasoning }}</p>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Plain English Guide -->
+    {% if analysis.explainer.terms %}
+    <div class="section" id="explainer">
+        <div class="section-header">
+            <h2>Plain English Guide</h2>
+        </div>
+        <p class="section-summary">Key legal terms from this document explained in plain English.</p>
+
+        {% for term in analysis.explainer.terms %}
+        <details class="term-card">
+            <summary>{{ term.term }}</summary>
+            <div class="term-card-body">
+                <p><strong>What it means:</strong> {{ term.definition }}</p>
+                <p><strong>Real-world example:</strong> {{ term.real_world_example }}</p>
+                <p><strong>Why it matters:</strong> {{ term.why_it_matters }}</p>
+            </div>
+        </details>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
+        Generated by LegalOS. This analysis is AI-generated and should not be treated as legal advice. Always consult with a qualified lawyer.
+    </div>
+</div>
+
+</body>
+</html>
