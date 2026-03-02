@@ -47,8 +47,9 @@ Feed it your fundraising documents and get:
 4. **Plain English Guide** — every complex legal term explained with real-world Indian startup examples
 5. **Redlined DOCX** — margin comments with counter-proposals and alternative language, ready to send to lawyers
 6. **Terminal Q&A** — ask follow-up questions about the document with full conversation context
-7. **Knowledge Base** — accumulated legal insights from every analysis, injected into future reviews so the AI learns from your experience
-8. **Feedback Loop** — tell LegalOS what it missed or over-flagged and it adjusts in future sessions
+7. **Legal Team Brief** — paste or load your lawyer's guidance (free text, .txt, .md, .pdf, .docx) and it's injected into every analysis prompt
+8. **Knowledge Base** — accumulated legal insights from every analysis, injected into future reviews so the AI learns from your experience
+9. **Feedback Loop** — tell LegalOS what it missed or over-flagged and it adjusts in future sessions
 
 ---
 
@@ -61,8 +62,14 @@ export ANTHROPIC_API_KEY=sk-ant-xxxxx
 # Set up your founder profile (optional but recommended)
 legalos init
 
+# Or pre-load your lawyer's notes during setup
+legalos init --legal-brief ./lawyer-notes.txt
+
 # Analyze a term sheet
 legalos analyze ./termsheet.pdf
+
+# Analyze with a per-session legal brief override
+legalos analyze ./termsheet.pdf --legal-brief ./lawyer-notes.txt
 
 # Generate redline comments on a SHA
 legalos redline ./sha.docx --author "Founder Name"
@@ -126,6 +133,9 @@ legalos analyze ./doc.pdf --no-qa --no-feedback
 
 # Don't auto-open the report in browser
 legalos analyze ./doc.pdf --no-browser
+
+# Override legal team brief for this session (doesn't modify saved profile)
+legalos analyze ./doc.pdf --legal-brief ./lawyer-notes.txt
 
 # See token usage, costs, and prompt details
 legalos analyze ./doc.pdf -v
@@ -209,7 +219,7 @@ The profile personalizes every analysis to your company's situation. Without a p
 legalos init
 ```
 
-The interactive wizard walks you through four steps:
+The interactive wizard walks you through five steps:
 
 **Step 1 — Company Context**
 - Company name, sector, funding stage (Pre-Seed through Series D+)
@@ -229,6 +239,12 @@ The interactive wizard walks you through four steps:
 - Investor names, lead investor, deal size, pre-money valuation
 - Used for exit waterfall calculations and negotiation weighting
 
+**Step 5 — Legal Team Brief**
+- Free-text guidance from your lawyer or legal team
+- Three input modes: **type** (paste text directly), **file** (load from .txt/.md/.pdf/.docx), or **skip**
+- Can also be pre-loaded via `legalos init --legal-brief ./notes.txt`
+- Injected as `<legal_team_guidance>` into every analysis prompt so the AI follows your lawyer's specific instructions
+
 All fields are optional — press Enter to skip anything.
 
 ### Managing Your Profile
@@ -245,6 +261,9 @@ legalos profile set priorities.high_priority_areas "Board control, Anti-dilution
 legalos profile set priorities.custom_watchlist "Full ratchet, Drag-along below 75%"
 legalos profile set deal.deal_size "INR 15Cr"
 legalos profile set deal.investor_names "Sequoia, Accel"
+
+# Set legal team brief
+legalos profile set legal_team_brief "Watch for full ratchet, non-compete beyond 1yr, any put options before 5yr"
 
 # Delete profile
 legalos profile clear
@@ -459,6 +478,7 @@ Document Input (PDF / DOCX / Image)
     Build Augmented System Prompt
     +-- Base: Senior Indian startup lawyer persona
     +-- <founder_context>: company, risk tolerance, priorities, watchlist, deal params
+    |   +-- <legal_team_guidance>: lawyer's brief (if provided)
     +-- <past_feedback>: aggregated missed/over-flagged patterns
     +-- <founder_learnings>: top knowledge base entries + focus areas
         |
