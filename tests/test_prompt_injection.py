@@ -13,6 +13,7 @@ from legalos.profile.schemas import (
     RiskTolerance,
 )
 from legalos.profile.prompt_injection import (
+    _build_founder_context,
     _build_learnings_block,
     augment_section_prompt,
     build_full_system_prompt,
@@ -220,6 +221,39 @@ class TestAugmentSectionPrompt:
             if l.strip().startswith("- ") and "Insight" in l
         ]
         assert len(insight_lines) <= 5
+
+    def test_brief_in_founder_context(self):
+        profile = FounderProfile(
+            legal_team_brief="Watch for full ratchet and non-compete beyond 1yr",
+        )
+        result = build_full_system_prompt("Base", profile=profile)
+        assert "<legal_team_guidance>" in result
+        assert "full ratchet" in result
+        assert "</legal_team_guidance>" in result
+
+    def test_empty_brief_no_block(self):
+        profile = FounderProfile(legal_team_brief="")
+        result = build_full_system_prompt("Base", profile=profile)
+        assert "<legal_team_guidance>" not in result
+
+    def test_brief_inside_founder_context(self):
+        profile = FounderProfile(
+            company=CompanyContext(name="Acme"),
+            legal_team_brief="Flag any IP assignment clauses",
+        )
+        ctx = _build_founder_context(profile)
+        # <legal_team_guidance> must be nested inside <founder_context>
+        fc_open = ctx.index("<founder_context>")
+        fc_close = ctx.index("</founder_context>")
+        ltg_open = ctx.index("<legal_team_guidance>")
+        ltg_close = ctx.index("</legal_team_guidance>")
+        assert fc_open < ltg_open < ltg_close < fc_close
+
+    def test_brief_truncation(self):
+        long_brief = "x" * 15_000
+        profile = FounderProfile(legal_team_brief=long_brief)
+        ctx = _build_founder_context(profile)
+        assert "[...truncated to 10,000 characters]" in ctx
 
     def test_profile_and_learnings_combined(self):
         profile = FounderProfile(

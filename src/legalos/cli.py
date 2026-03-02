@@ -28,11 +28,12 @@ def cli() -> None:
 
 
 @cli.command()
-def init() -> None:
+@click.option("--legal-brief", "legal_brief", type=click.Path(exists=True, path_type=Path), default=None, help="Path to a legal team brief file (.txt/.md/.pdf/.docx).")
+def init(legal_brief: Path | None) -> None:
     """Set up your founder profile for personalized analysis."""
     from legalos.profile.init_flow import run_init_flow
 
-    run_init_flow()
+    run_init_flow(legal_brief_file=legal_brief)
 
 
 # ── Profile management ──────────────────────────────────────────
@@ -80,6 +81,12 @@ def profile(ctx: click.Context) -> None:
         for dtype, items in p.priority_overrides.items():
             console.print(f"    {dtype}: {', '.join(items)}")
 
+    if p.legal_team_brief:
+        preview = p.legal_team_brief[:150]
+        if len(p.legal_team_brief) > 150:
+            preview += "..."
+        console.print(f"  Legal brief:    {preview}")
+
     d = p.deal_context
     if d.investor_names or d.deal_size or d.pre_money_valuation:
         console.print("\n  [bold]Deal Context[/]")
@@ -120,6 +127,8 @@ def profile_set(key: str, value: str) -> None:
         if len(parts) == 1:
             if key == "risk_tolerance":
                 p.risk_tolerance = RiskTolerance(value)
+            elif key == "legal_team_brief":
+                p.legal_team_brief = value
             else:
                 raise click.BadParameter(f"Unknown top-level key: {key}")
         elif len(parts) == 2:
@@ -349,6 +358,27 @@ def feedback_import(file: Path) -> None:
     except Exception as e:
         print_error(f"Import failed: {e}")
         raise SystemExit(1)
+
+
+@feedback_group.command("submit")
+@click.option("--up", "up_titles", default="", help="Comma-separated titles of helpful findings.")
+@click.option("--down", "down_titles", default="", help="Comma-separated titles of not-relevant findings.")
+@click.option("--doc", "doc_name", default="", help="Document name the feedback is for.")
+def feedback_submit(up_titles: str, down_titles: str, doc_name: str) -> None:
+    """Submit per-finding feedback directly (paste from report)."""
+    from legalos.profile.store import submit_feedback_from_titles
+
+    up_list = [t.strip() for t in up_titles.split(",") if t.strip()] if up_titles else []
+    down_list = [t.strip() for t in down_titles.split(",") if t.strip()] if down_titles else []
+
+    if not up_list and not down_list:
+        print_error("No feedback provided. Use --up and/or --down with finding titles.")
+        raise SystemExit(1)
+
+    item = submit_feedback_from_titles(doc_name, up_list, down_list)
+    n_fp = len(item.false_positives)
+    total = len(up_list) + len(down_list)
+    print_success(f"Feedback saved: {total} finding(s) rated ({n_fp} marked not relevant)")
 
 
 @feedback_group.command("clear")
@@ -626,6 +656,8 @@ def _apply_deal_context(
     default=None,
     help="Document type (auto-detected if omitted).",
 )
+@click.option("--deep", is_flag=True, help="Full section-by-section analysis (default: quick scan).")
+@click.option("--legal-brief", "legal_brief", type=click.Path(exists=True, path_type=Path), default=None, help="Override legal team brief for this session (.txt/.md/.pdf/.docx).")
 @click.option("--verbose", "-v", is_flag=True, help="Show token usage details.")
 def analyze(
     path: Path,
@@ -636,6 +668,8 @@ def analyze(
     no_feedback: bool,
     deal_name: str | None,
     document_type: str | None,
+    deep: bool,
+    legal_brief: Path | None,
     verbose: bool,
 ) -> None:
     """Analyze legal documents and generate an interactive report.
@@ -659,8 +693,33 @@ def analyze(
     feedback_store = load_feedback()
     learnings_store = load_learnings()
 
+    # Auto-import any sidecar feedback files from CWD
+    from legalos.profile.store import auto_import_sidecar_feedback
+    sidecar_count = auto_import_sidecar_feedback()
+    if sidecar_count > 0:
+        print_success(f"Auto-imported feedback from {sidecar_count} sidecar file(s)")
+        feedback_store = load_feedback()  # Reload with new feedback
+
     # Apply deal overlay if specified
     profile = _apply_deal_context(deal_name, profile, verbose)
+
+    # Apply --legal-brief session overlay if specified
+    if legal_brief is not None:
+        from legalos.parsing.router import parse_file_to_text
+
+        brief_suffix = legal_brief.suffix.lower()
+        if brief_suffix in (".txt", ".md"):
+            brief_text = legal_brief.read_text(encoding="utf-8")
+        else:
+            brief_text = parse_file_to_text(legal_brief)
+        if brief_text:
+            if profile is None:
+                from legalos.profile.schemas import FounderProfile as _FP
+                profile = _FP()
+            profile = profile.model_copy(deep=True)
+            profile.legal_team_brief = brief_text
+            if verbose:
+                console.print(f"[dim]Legal brief loaded from {legal_brief} ({len(brief_text)} chars)[/]")
 
     if profile is not None:
         label = profile.company.name or "founder"
@@ -696,83 +755,146 @@ def analyze(
 
     # Analyze
     client = AnalysisClient(model_id=model_id, verbose=verbose)
-    try:
-        analysis = run_analysis(
-            client, documents, profile=profile, feedback=feedback_store,
-            document_type=document_type or "", learnings=learnings_store,
-        )
-    except Exception as e:
-        print_error(f"Analysis failed: {e}")
-        raise SystemExit(1)
 
-    print_success(f"Analysis complete — {sum(len(s.findings) for s in analysis.sections)} findings across {len(analysis.sections)} sections")
+    if deep:
+        # Full 9-pass analysis (existing behavior)
+        try:
+            analysis = run_analysis(
+                client, documents, profile=profile, feedback=feedback_store,
+                document_type=document_type or "", learnings=learnings_store,
+            )
+        except Exception as e:
+            print_error(f"Analysis failed: {e}")
+            raise SystemExit(1)
 
-    if verbose:
-        print_cost(client.usage.summary(model_id))
+        print_success(f"Analysis complete — {sum(len(s.findings) for s in analysis.sections)} findings across {len(analysis.sections)} sections")
 
-    # Auto-populate profile from analysis if no profile exists
-    if profile is None:
-        profile = offer_auto_populate(analysis)
-
-    # Collect relevant knowledge entries for the report
-    from legalos.profile.store import search_learnings as _search_learnings
-
-    knowledge_for_report = []
-    if learnings_store.entries:
-        for section in analysis.sections:
-            matches = _search_learnings(learnings_store, section_id=section.section_id)
-            for m in matches:
-                if m not in knowledge_for_report:
-                    knowledge_for_report.append(m)
-
-    # Generate report
-    try:
-        report_path = generate_report(
-            analysis, output_path=output, open_browser=not no_browser, profile=profile,
-            knowledge_entries=knowledge_for_report or None,
-        )
-    except Exception as e:
-        print_error(f"Report generation failed: {e}")
-        raise SystemExit(1)
-
-    print_success(f"Report saved to {report_path}")
-    if not no_browser:
-        console.print("[dim]Report opened in browser.[/]")
-
-    # Q&A session (feedback moved AFTER Q&A — user has more context by then)
-    if not no_qa:
-        combined_text = "\n\n---\n\n".join(doc.full_text for doc in documents)
-        run_qa_session(
-            client, combined_text, analysis,
-            profile=profile, feedback=feedback_store, no_feedback=no_feedback,
-        )
         if verbose:
             print_cost(client.usage.summary(model_id))
 
-    # Feedback collection — after Q&A so user has fully digested the report
-    if not no_feedback:
-        doc_name = ", ".join(doc.source_path.name for doc in documents)
-        run_feedback_flow(
-            document_name=doc_name,
-            model_used=model_id,
-            feedback=feedback_store,
-            analysis=analysis,
-        )
+        # Auto-populate profile from analysis if no profile exists
+        if profile is None:
+            profile = offer_auto_populate(analysis)
 
-        # Auto-capture learnings from the analysis
-        from legalos.profile.learning_capture import (
-            auto_capture_learnings,
-            offer_manual_learning,
-        )
+        # Collect relevant knowledge entries for the report
+        from legalos.profile.store import search_learnings as _search_learnings
 
-        new_entries = auto_capture_learnings(
-            analysis, feedback_store, learnings_store,
-        )
-        if new_entries:
-            console.print(
-                f"[bold green]{len(new_entries)} new learning(s) captured.[/]"
+        knowledge_for_report = []
+        if learnings_store.entries:
+            for section in analysis.sections:
+                matches = _search_learnings(learnings_store, section_id=section.section_id)
+                for m in matches:
+                    if m not in knowledge_for_report:
+                        knowledge_for_report.append(m)
+
+        # Generate report
+        try:
+            report_path = generate_report(
+                analysis, output_path=output, open_browser=not no_browser, profile=profile,
+                knowledge_entries=knowledge_for_report or None,
             )
-        manual = offer_manual_learning()
+        except Exception as e:
+            print_error(f"Report generation failed: {e}")
+            raise SystemExit(1)
+
+        print_success(f"Report saved to {report_path}")
+        if not no_browser:
+            console.print("[dim]Report opened in browser.[/]")
+
+        # Q&A session
+        if not no_qa:
+            combined_text = "\n\n---\n\n".join(doc.full_text for doc in documents)
+            run_qa_session(
+                client, combined_text, analysis,
+                profile=profile, feedback=feedback_store, no_feedback=no_feedback,
+            )
+            if verbose:
+                print_cost(client.usage.summary(model_id))
+
+        # Feedback collection
+        if not no_feedback:
+            doc_name = ", ".join(doc.source_path.name for doc in documents)
+            run_feedback_flow(
+                document_name=doc_name,
+                model_used=model_id,
+                feedback=feedback_store,
+                analysis=analysis,
+            )
+
+            from legalos.profile.learning_capture import (
+                auto_capture_learnings,
+                offer_manual_learning,
+            )
+
+            new_entries = auto_capture_learnings(
+                analysis, feedback_store, learnings_store,
+            )
+            if new_entries:
+                console.print(
+                    f"[bold green]{len(new_entries)} new learning(s) captured.[/]"
+                )
+            manual = offer_manual_learning()
+
+    else:
+        # Quick scan (default) — 1 API call
+        from legalos.analysis.engine import run_quick_analysis
+        from legalos.analysis.schemas import ExecutiveSummary, FullAnalysis
+        from legalos.report.generator import generate_quick_report
+
+        try:
+            quick_result = run_quick_analysis(
+                client, documents, profile=profile, feedback=feedback_store,
+                document_type=document_type or "", learnings=learnings_store,
+            )
+        except Exception as e:
+            print_error(f"Quick scan failed: {e}")
+            raise SystemExit(1)
+
+        n_flags = len(quick_result.red_flags)
+        print_success(f"Quick scan complete — {n_flags} red flag(s) found")
+
+        if verbose:
+            print_cost(client.usage.summary(model_id))
+
+        # Generate quick scan report
+        try:
+            report_path = generate_quick_report(
+                quick_result, output_path=output, open_browser=not no_browser,
+                profile=profile,
+            )
+        except Exception as e:
+            print_error(f"Report generation failed: {e}")
+            raise SystemExit(1)
+
+        print_success(f"Report saved to {report_path}")
+        if not no_browser:
+            console.print("[dim]Report opened in browser.[/]")
+
+        # Q&A session with lightweight FullAnalysis shell
+        if not no_qa:
+            combined_text = "\n\n---\n\n".join(doc.full_text for doc in documents)
+            qa_analysis = FullAnalysis(
+                document_name=quick_result.document_name,
+                document_type=quick_result.document_type,
+                executive_summary=ExecutiveSummary(
+                    overall_risk=quick_result.overall_risk,
+                    bottom_line=quick_result.bottom_line,
+                    must_negotiate=quick_result.must_negotiate,
+                ),
+            )
+            run_qa_session(
+                client, combined_text, qa_analysis,
+                profile=profile, feedback=feedback_store, no_feedback=no_feedback,
+            )
+            if verbose:
+                print_cost(client.usage.summary(model_id))
+
+        # Suggest deep dive
+        console.print()
+        console.print(
+            "[bold cyan]Want the full picture?[/] "
+            f"Run [bold]legalos analyze {path} --deep[/] for detailed analysis."
+        )
 
 
 # ── Redline ─────────────────────────────────────────────────────

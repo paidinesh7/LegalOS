@@ -49,7 +49,20 @@ _RISK_OPTIONS = [
 ]
 
 
-def run_init_flow(directory: Path | None = None) -> FounderProfile:
+def _read_brief_file(path: Path) -> str:
+    """Read a legal brief file and return its text content."""
+    suffix = path.suffix.lower()
+    if suffix in (".txt", ".md"):
+        return path.read_text(encoding="utf-8")
+    if suffix in (".pdf", ".docx"):
+        from legalos.parsing.router import parse_file_to_text
+
+        return parse_file_to_text(path)
+    console.print(f"[yellow]Unsupported brief format '{suffix}'. Use .txt, .md, .pdf, or .docx.[/]")
+    return ""
+
+
+def run_init_flow(directory: Path | None = None, legal_brief_file: Path | None = None) -> FounderProfile:
     """Run the interactive init wizard and save the profile."""
     console.print()
     console.print(Panel(
@@ -73,7 +86,7 @@ def run_init_flow(directory: Path | None = None) -> FounderProfile:
             return existing
 
     # Step 1: Company Context
-    console.print("\n[bold cyan]Step 1/4: Company Context[/]")
+    console.print("\n[bold cyan]Step 1/5: Company Context[/]")
     console.print("[dim]Tell us about your company.[/]\n")
 
     name = Prompt.ask("  Company name", default="")
@@ -102,7 +115,7 @@ def run_init_flow(directory: Path | None = None) -> FounderProfile:
     )
 
     # Step 2: Legal Priorities
-    console.print("\n[bold cyan]Step 2/4: Legal Priorities[/]")
+    console.print("\n[bold cyan]Step 2/5: Legal Priorities[/]")
     console.print("[dim]What should LegalOS pay extra attention to?[/]\n")
 
     console.print("  Suggested priority areas:")
@@ -157,7 +170,7 @@ def run_init_flow(directory: Path | None = None) -> FounderProfile:
     )
 
     # Step 3: Risk Tolerance
-    console.print("\n[bold cyan]Step 3/4: Risk Tolerance[/]")
+    console.print("\n[bold cyan]Step 3/5: Risk Tolerance[/]")
     console.print("[dim]How aggressively should LegalOS flag issues?[/]\n")
 
     for num, label, _ in _RISK_OPTIONS:
@@ -170,7 +183,7 @@ def run_init_flow(directory: Path | None = None) -> FounderProfile:
             break
 
     # Step 4: Deal Context
-    console.print("\n[bold cyan]Step 4/4: Deal Context[/]")
+    console.print("\n[bold cyan]Step 4/5: Deal Context[/]")
     console.print("[dim]Details about the current deal (all optional).[/]\n")
 
     investors_input = Prompt.ask("  Investor names (comma-separated)", default="")
@@ -187,6 +200,50 @@ def run_init_flow(directory: Path | None = None) -> FounderProfile:
         pre_money_valuation=pre_money,
     )
 
+    # Step 5: Legal Team Brief
+    console.print("\n[bold cyan]Step 5/5: Legal Team Brief[/]")
+    console.print("[dim]Paste guidance from your legal team, or load from a file.[/]\n")
+
+    legal_team_brief = ""
+
+    if legal_brief_file is not None:
+        # Pre-loaded via --legal-brief flag
+        legal_team_brief = _read_brief_file(legal_brief_file)
+        if legal_team_brief:
+            preview = legal_team_brief[:150]
+            if len(legal_team_brief) > 150:
+                preview += "..."
+            console.print(f"  [dim]Loaded from {legal_brief_file}:[/]")
+            console.print(f"  [dim]{preview}[/]")
+    else:
+        brief_choice = Prompt.ask(
+            "  How to provide legal brief?",
+            choices=["type", "file", "skip"],
+            default="skip",
+        )
+        if brief_choice == "type":
+            console.print("  [dim]Type your brief (enter an empty line to finish):[/]")
+            lines: list[str] = []
+            while True:
+                line = Prompt.ask("  ", default="")
+                if not line:
+                    break
+                lines.append(line)
+            legal_team_brief = "\n".join(lines)
+        elif brief_choice == "file":
+            file_path_str = Prompt.ask("  Path to brief file (.txt/.md/.pdf/.docx)", default="")
+            if file_path_str:
+                brief_path = Path(file_path_str).expanduser()
+                if brief_path.is_file():
+                    legal_team_brief = _read_brief_file(brief_path)
+                    if legal_team_brief:
+                        preview = legal_team_brief[:150]
+                        if len(legal_team_brief) > 150:
+                            preview += "..."
+                        console.print(f"  [dim]Loaded: {preview}[/]")
+                else:
+                    console.print(f"  [yellow]File not found: {brief_path}[/]")
+
     # Build and save
     profile = FounderProfile(
         company=company,
@@ -194,6 +251,7 @@ def run_init_flow(directory: Path | None = None) -> FounderProfile:
         risk_tolerance=risk_tolerance,
         deal_context=deal_context,
         priority_overrides=priority_overrides,
+        legal_team_brief=legal_team_brief,
     )
 
     path = save_profile(profile, directory)

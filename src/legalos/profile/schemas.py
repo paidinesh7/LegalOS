@@ -66,6 +66,10 @@ class FounderProfile(BaseModel):
         default_factory=dict,
         description="Document-type-specific priority overrides (e.g. 'term_sheet': ['valuation basis'])",
     )
+    legal_team_brief: str = Field(
+        default="",
+        description="Free-text guidance from legal team, injected into analysis prompts.",
+    )
 
 
 # ── Feedback models ─────────────────────────────────────────────

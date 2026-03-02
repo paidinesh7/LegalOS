@@ -111,6 +111,16 @@ def _build_founder_context(profile: FounderProfile) -> str:
         if d.pre_money_valuation:
             parts.append(f"  Pre-money valuation: {d.pre_money_valuation}")
 
+    # Legal team brief
+    if profile.legal_team_brief:
+        brief = profile.legal_team_brief
+        if len(brief) > 10_000:
+            brief = brief[:10_000] + "\n[...truncated to 10,000 characters]"
+        parts.append("")
+        parts.append("<legal_team_guidance>")
+        parts.append(brief)
+        parts.append("</legal_team_guidance>")
+
     parts.append("</founder_context>")
     return "\n".join(parts)
 

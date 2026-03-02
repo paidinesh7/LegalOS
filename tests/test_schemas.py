@@ -1,6 +1,9 @@
-"""Tests for profile schemas — especially learnings models."""
+"""Tests for profile schemas — especially learnings models and founder profile."""
+
+import json
 
 from legalos.profile.schemas import (
+    FounderProfile,
     LearningCategory,
     LearningEntry,
     LearningSummary,
@@ -102,3 +105,31 @@ class TestLearningSummary:
         assert summary.by_category == {}
         assert summary.top_tags == []
         assert summary.most_useful == []
+
+
+class TestFounderProfileLegalBrief:
+    def test_default_empty(self):
+        profile = FounderProfile()
+        assert profile.legal_team_brief == ""
+
+    def test_with_brief(self):
+        brief = "Watch for full ratchet, non-compete beyond 1yr"
+        profile = FounderProfile(legal_team_brief=brief)
+        assert profile.legal_team_brief == brief
+
+    def test_backward_compatible_load(self):
+        """Old JSON without legal_team_brief should load fine."""
+        old_json = json.dumps({
+            "company": {"name": "Acme"},
+            "risk_tolerance": "balanced",
+        })
+        profile = FounderProfile.model_validate_json(old_json)
+        assert profile.company.name == "Acme"
+        assert profile.legal_team_brief == ""
+
+    def test_serialization_roundtrip(self):
+        brief = "No put options before year 5.\nCap non-compete at 12 months."
+        profile = FounderProfile(legal_team_brief=brief)
+        json_str = profile.model_dump_json()
+        restored = FounderProfile.model_validate_json(json_str)
+        assert restored.legal_team_brief == brief
