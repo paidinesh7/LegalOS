@@ -15,3 +15,5 @@ venv/
 !src/legalos/report/templates/report.html
 output/
 .legalos/
+documents/*
+!documents/DROP_FILES_HERE.txt

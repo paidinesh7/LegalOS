@@ -634,7 +634,7 @@ def _apply_deal_context(
 
 
 @cli.command()
-@click.argument("path", type=click.Path(exists=True, path_type=Path))
+@click.argument("path", type=click.Path(path_type=Path), default=None, required=False)
 @click.option(
     "--model", "-m",
     type=click.Choice(["opus", "sonnet", "haiku"], case_sensitive=False),
@@ -660,7 +660,7 @@ def _apply_deal_context(
 @click.option("--legal-brief", "legal_brief", type=click.Path(exists=True, path_type=Path), default=None, help="Override legal team brief for this session (.txt/.md/.pdf/.docx).")
 @click.option("--verbose", "-v", is_flag=True, help="Show token usage details.")
 def analyze(
-    path: Path,
+    path: Path | None,
     model: str,
     output: Path | None,
     no_qa: bool,
@@ -675,7 +675,20 @@ def analyze(
     """Analyze legal documents and generate an interactive report.
 
     PATH can be a single file (PDF/DOCX/image) or a directory of files.
+    Defaults to the documents/ folder if omitted.
     """
+    if path is None:
+        path = Path("documents")
+    if not path.exists():
+        print_error(
+            f"Path '{path}' not found.\n\n"
+            "  Drop your files in the documents/ folder and run:\n\n"
+            "    legalos analyze\n\n"
+            "  Or specify a path:\n\n"
+            "    legalos analyze ./your-file.pdf"
+        )
+        raise SystemExit(1)
+
     from legalos.analysis.client import AnalysisClient
     from legalos.analysis.engine import run_analysis
     from legalos.parsing.router import parse_input

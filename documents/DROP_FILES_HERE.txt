@@ -1,0 +1,5 @@
+Drop your legal documents here (PDF, Word, or images).
+
+Then open your terminal and run:
+
+    legalos analyze

@@ -63,21 +63,27 @@ All questions are optional — press Enter to skip any of them.
 
 ## Analyzing a Document
 
-### Get the full report
+### The simple way
 
-Put your document (PDF, Word, or image) somewhere you can find it, then run:
+Drop your files (PDF, Word, or images) into the `documents/` folder, then run:
+
+```
+legalos analyze
+```
+
+That's it. LegalOS picks up everything in the folder.
+
+**What happens:** LegalOS reads the document, runs 8 analysis passes, and opens an interactive HTML report in your browser. After the report, it drops you into a Q&A session in the terminal where you can ask questions about the document. Type `quit` when you're done.
+
+### Analyze a specific file or folder
+
+If you prefer to specify a path explicitly:
 
 ```
 legalos analyze termsheet.pdf
-```
-
-Replace `termsheet.pdf` with the path to your file. For example, if it's on your Desktop:
-
-```
 legalos analyze ~/Desktop/termsheet.pdf
+legalos analyze ./deal-docs/
 ```
-
-**What happens:** LegalOS reads the document, runs 8 analysis passes, and opens an interactive HTML report in your browser. After the report, it drops you into a Q&A session in the terminal where you can ask questions about the document. Type `quit` when you're done.
 
 ### Get a redlined Word document
 
@@ -88,16 +94,6 @@ legalos redline sha.docx --author "Your Name"
 ```
 
 This creates a new file (e.g. `sha_redlined.docx`) with comments on every clause that needs attention. You can send this directly to your lawyer or investor counsel.
-
-### Analyze a whole folder
-
-If you have multiple documents for the same deal (term sheet + SHA + SSA), put them in one folder and run:
-
-```
-legalos analyze ./deal-docs/
-```
-
-LegalOS will combine and analyze them together.
 
 ---
 
@@ -154,9 +150,9 @@ Valid types: `term_sheet`, `sha`, `ssa`, `spa`, `convertible_note`, `safe`
 
 | Command | Model | When to Use |
 |---------|-------|-------------|
-| `legalos analyze doc.pdf` | Sonnet (default) | Day-to-day analysis |
-| `legalos analyze doc.pdf --model haiku` | Haiku | Quick first look, cheapest |
-| `legalos analyze doc.pdf --model opus` | Opus | Final review before signing |
+| `legalos analyze` | Sonnet (default) | Day-to-day analysis |
+| `legalos analyze --model haiku` | Haiku | Quick first look, cheapest |
+| `legalos analyze --model opus` | Opus | Final review before signing |
 
 Add `-v` to any command to see how much a run cost.
 
