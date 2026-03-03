@@ -408,12 +408,14 @@ body {
             box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
         }
         .feedback-bar .counter { font-size: 13px; color: #6b7280; }
-        .feedback-bar .export-btn {
+        .feedback-bar .save-btn {
             background: #4f46e5; color: #fff; border: none; border-radius: 6px;
             padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 500;
+            transition: background 0.15s;
         }
-        .feedback-bar .export-btn:hover { background: #4338ca; }
-        .feedback-bar .export-btn:disabled { background: #9ca3af; cursor: default; }
+        .feedback-bar .save-btn:hover { background: #4338ca; }
+        .feedback-bar .save-btn:disabled { background: #9ca3af; cursor: default; }
+        .feedback-bar .save-btn.copied { background: #16a34a; }
     </style>
 </head>
 <body>
@@ -990,7 +992,7 @@ body {
 <!-- Floating feedback bar -->
 <div class="feedback-bar" id="feedbackBar" style="display: none;">
     <span class="counter" id="voteCounter">0 findings rated</span>
-    <button class="export-btn" onclick="exportFeedback()">Export Feedback JSON</button>
+    <button class="save-btn" id="saveBtn" onclick="saveFeedback()">Save Feedback</button>
 </div>
 
 <script>
@@ -1038,22 +1040,63 @@ body {
         }
     };
 
-    window.exportFeedback = function() {
-        var payload = {
+    window.saveFeedback = function() {
+        var upTitles = [];
+        var downTitles = [];
+        var voteList = Object.values(votes);
+        for (var i = 0; i < voteList.length; i++) {
+            if (voteList[i].vote === 'up') {
+                upTitles.push(voteList[i].finding_title);
+            } else {
+                downTitles.push(voteList[i].finding_title);
+            }
+        }
+
+        var parts = ['legalos feedback submit'];
+        if (upTitles.length > 0) {
+            parts.push('--up "' + upTitles.join(', ') + '"');
+        }
+        if (downTitles.length > 0) {
+            parts.push('--down "' + downTitles.join(', ') + '"');
+        }
+        parts.push('--doc "' + docName + '"');
+        var command = parts.join(' ');
+
+        // Also write to sidecar data attribute for auto-import
+        var sidecarData = {
             document_name: docName,
             timestamp: new Date().toISOString(),
-            votes: Object.values(votes)
+            votes: voteList
         };
-        var json = JSON.stringify(payload, null, 2);
-        var blob = new Blob([json], {type: 'application/json'});
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'legalos_feedback_' + docName.replace(/[^a-zA-Z0-9]/g, '_') + '.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        document.documentElement.setAttribute('data-feedback', JSON.stringify(sidecarData));
+
+        // Copy command to clipboard
+        navigator.clipboard.writeText(command).then(function() {
+            var btn = document.getElementById('saveBtn');
+            btn.textContent = 'Copied! Paste in terminal.';
+            btn.classList.add('copied');
+            setTimeout(function() {
+                btn.textContent = 'Save Feedback';
+                btn.classList.remove('copied');
+            }, 3000);
+        }).catch(function() {
+            // Fallback: select from a temporary textarea
+            var ta = document.createElement('textarea');
+            ta.value = command;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            var btn = document.getElementById('saveBtn');
+            btn.textContent = 'Copied! Paste in terminal.';
+            btn.classList.add('copied');
+            setTimeout(function() {
+                btn.textContent = 'Save Feedback';
+                btn.classList.remove('copied');
+            }, 3000);
+        });
     };
 })();
 </script>
