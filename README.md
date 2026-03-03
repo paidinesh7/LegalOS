@@ -181,6 +181,47 @@ Add `-v` to any command to see how much a run cost.
 
 ---
 
+## Using Other AI Models
+
+LegalOS defaults to Anthropic's Claude, but also supports OpenAI and Google Gemini models.
+
+### Install provider support
+
+```
+pip install -e ".[openai]"     # OpenAI models
+pip install -e ".[google]"     # Google Gemini models
+pip install -e ".[all]"        # Both
+```
+
+### Set your API key
+
+```
+export OPENAI_API_KEY=sk-xxxxx
+export GOOGLE_API_KEY=AIzaxxxxx
+```
+
+### Run with a different provider
+
+```
+legalos analyze doc.pdf --provider openai --model 4o
+legalos analyze doc.pdf --provider google --model pro
+legalos redline sha.docx --provider openai --model o3
+```
+
+### Available models
+
+| Provider | Aliases | Default |
+|----------|---------|---------|
+| **anthropic** | `opus`, `sonnet`, `haiku` | `sonnet` |
+| **openai** | `o3`, `4o`, `4o-mini` | `4o` |
+| **google** | `pro`, `flash` | `flash` |
+
+You can also pass a full model ID directly: `--model gpt-4o-2024-08-06`
+
+> **Note:** Anthropic remains the default and best-tested provider. OpenAI and Google support is functional but less battle-tested.
+
+---
+
 ## Power User Features
 
 You don't need any of this to get started — but it's there when you want it.

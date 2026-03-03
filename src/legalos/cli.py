@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 
-from legalos.config import resolve_model
+from legalos.config import DEFAULT_ALIAS, resolve_model
 from legalos.utils.progress import (
     console,
     print_cost,
@@ -688,11 +688,16 @@ def _apply_deal_context(
 @cli.command()
 @click.argument("path", type=click.Path(path_type=Path), default=None, required=False)
 @click.option(
-    "--model", "-m",
-    type=click.Choice(["opus", "sonnet", "haiku"], case_sensitive=False),
-    default="sonnet",
+    "--provider", "-p",
+    type=click.Choice(["anthropic", "openai", "google"], case_sensitive=False),
+    default="anthropic",
     show_default=True,
-    help="Claude model to use.",
+    help="LLM provider to use.",
+)
+@click.option(
+    "--model", "-m",
+    default=None,
+    help="Model alias or full model ID (default: provider's default model).",
 )
 @click.option("--output", "-o", type=click.Path(path_type=Path), default=None, help="Output HTML path.")
 @click.option("--no-qa", is_flag=True, help="Skip the interactive Q&A session.")
@@ -713,7 +718,8 @@ def _apply_deal_context(
 @click.option("--verbose", "-v", is_flag=True, help="Show token usage details.")
 def analyze(
     path: Path | None,
-    model: str,
+    provider: str,
+    model: str | None,
     output: Path | None,
     no_qa: bool,
     no_browser: bool,
@@ -742,7 +748,7 @@ def analyze(
         )
         raise SystemExit(1)
 
-    from legalos.analysis.client import AnalysisClient
+    from legalos.analysis.client import create_client
     from legalos.analysis.engine import run_analysis
     from legalos.parsing.router import parse_input
     from legalos.profile.auto_populate import offer_auto_populate
@@ -751,8 +757,9 @@ def analyze(
     from legalos.qa.session import run_qa_session
     from legalos.report.generator import generate_report
 
-    model_id = resolve_model(model)
-    print_header(f"LegalOS — Analyzing with {model}")
+    model_alias = model or DEFAULT_ALIAS[provider.lower()]
+    model_id = resolve_model(model_alias, provider)
+    print_header(f"LegalOS — Analyzing with {model_alias} ({provider})")
 
     # Load profile, feedback, and learnings
     profile = load_profile()
@@ -828,14 +835,12 @@ def analyze(
 
     # Analyze
     try:
-        client = AnalysisClient(model_id=model_id, verbose=verbose)
-    except EnvironmentError:
-        print_error(
-            "ANTHROPIC_API_KEY not set.\n\n"
-            "  Get your key from https://console.anthropic.com/ then run:\n\n"
-            "    export ANTHROPIC_API_KEY=sk-ant-xxxxx\n\n"
-            "  (Replace sk-ant-xxxxx with your actual key.)"
-        )
+        client = create_client(provider, model_id, verbose)
+    except EnvironmentError as e:
+        print_error(str(e))
+        raise SystemExit(1)
+    except ImportError as e:
+        print_error(str(e))
         raise SystemExit(1)
 
     if deep:
@@ -989,11 +994,16 @@ def analyze(
 @cli.command()
 @click.argument("path", type=click.Path(exists=True, path_type=Path))
 @click.option(
-    "--model", "-m",
-    type=click.Choice(["opus", "sonnet", "haiku"], case_sensitive=False),
-    default="sonnet",
+    "--provider", "-p",
+    type=click.Choice(["anthropic", "openai", "google"], case_sensitive=False),
+    default="anthropic",
     show_default=True,
-    help="Claude model to use.",
+    help="LLM provider to use.",
+)
+@click.option(
+    "--model", "-m",
+    default=None,
+    help="Model alias or full model ID (default: provider's default model).",
 )
 @click.option("--output", "-o", type=click.Path(path_type=Path), default=None, help="Output DOCX path.")
 @click.option("--author", "-a", default="LegalOS", show_default=True, help="Author name for comments.")
@@ -1001,7 +1011,8 @@ def analyze(
 @click.option("--verbose", "-v", is_flag=True, help="Show token usage details.")
 def redline(
     path: Path,
-    model: str,
+    provider: str,
+    model: str | None,
     output: Path | None,
     author: str,
     deal_name: str | None,
@@ -1011,7 +1022,7 @@ def redline(
 
     PATH must be a DOCX file.
     """
-    from legalos.analysis.client import AnalysisClient
+    from legalos.analysis.client import create_client
     from legalos.analysis.engine import run_redline_analysis
     from legalos.parsing.router import parse_input
     from legalos.profile.store import load_feedback, load_learnings as _load_learnings, load_profile
@@ -1021,8 +1032,9 @@ def redline(
         print_error("Redline command requires a .docx file.")
         raise SystemExit(1)
 
-    model_id = resolve_model(model)
-    print_header(f"LegalOS Redline — Using {model}")
+    model_alias = model or DEFAULT_ALIAS[provider.lower()]
+    model_id = resolve_model(model_alias, provider)
+    print_header(f"LegalOS Redline — Using {model_alias} ({provider})")
 
     # Load profile, feedback, and learnings
     profile = load_profile()
@@ -1047,7 +1059,11 @@ def redline(
     print_success(f"Parsed {sum(d.page_count for d in documents)} page(s)")
 
     # Analyze for redline
-    client = AnalysisClient(model_id=model_id, verbose=verbose)
+    try:
+        client = create_client(provider, model_id, verbose)
+    except (EnvironmentError, ImportError) as e:
+        print_error(str(e))
+        raise SystemExit(1)
     try:
         redline_output = run_redline_analysis(
             client, documents, profile=profile, feedback=feedback_store,

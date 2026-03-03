@@ -20,6 +20,9 @@ dependencies = [
 
 [project.optional-dependencies]
 ocr = ["easyocr>=1.7"]
+openai = ["openai>=1.0"]
+google = ["google-genai>=1.0"]
+all = ["openai>=1.0", "google-genai>=1.0"]
 
 [project.scripts]
 legalos = "legalos.cli:cli"
