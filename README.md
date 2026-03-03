@@ -248,6 +248,26 @@ All feedback is stored locally at `~/.legalos/feedback.json`. Nothing is uploade
 
 ---
 
+## Using Your Preferences Outside LegalOS
+
+LegalOS generates a `MyPreferences/my_preferences.md` file that captures everything the tool knows about you — your company profile, risk tolerance, priority watchlist, accumulated learnings, and feedback patterns. This file is auto-updated every time you change your profile, give feedback, or run an analysis.
+
+You can use this file as portable context for any AI interface:
+
+- **Claude Projects** — upload `my_preferences.md` to a Project's knowledge base. Claude will then have your legal preferences as context when you ask it to review clauses, draft counter-proposals, or explain terms.
+- **ChatGPT / Custom GPTs** — attach it as a knowledge file or paste it into a system prompt.
+- **Any AI chat interface** — drop the file into the conversation as context before asking legal questions about your fundraise.
+
+To generate or refresh the file:
+
+```
+legalos preferences
+```
+
+The file is plain Markdown — you can also edit the "Additional Notes" section at the bottom to add custom instructions that persist across regenerations.
+
+---
+
 ## Disclaimer
 
 LegalOS provides AI-generated analysis to help you understand what you're signing. It is not legal advice. Always have a qualified lawyer review your documents before signing.
