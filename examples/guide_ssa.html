@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalOS — Share Subscription Agreement Explainer for Founders</title>
+    <style>
+/* LegalOS Report — Professional Legal Aesthetic */
+
+:root {
+    --bg: #fafaf9;
+    --card-bg: #ffffff;
+    --text: #1c1917;
+    --text-muted: #78716c;
+    --border: #e7e5e4;
+    --accent: #1e40af;
+    --accent-light: #dbeafe;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --yellow: #ca8a04;
+    --yellow-bg: #fefce8;
+    --orange: #ea580c;
+    --orange-bg: #fff7ed;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --sidebar-w: 280px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar h1 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.sidebar .subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
+
+.sidebar nav a {
+    display: block;
+    padding: 8px 12px;
+    margin-bottom: 2px;
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.15s;
+}
+
+.sidebar nav a:hover { background: var(--accent-light); }
+
+.risk-legend { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+.risk-legend h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Main content */
+.main { margin-left: var(--sidebar-w); padding: 32px 48px; max-width: 960px; }
+.doc-header { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid var(--border); }
+.doc-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.doc-header .doc-type { font-size: 14px; color: var(--text-muted); }
+
+/* Sections */
+.section { margin-bottom: 32px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.section-header h2 { font-size: 22px; font-weight: 700; }
+.section-summary { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
+
+/* Findings */
+.findings { display: flex; flex-direction: column; gap: 8px; }
+.finding { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; border-left: 4px solid var(--border); }
+.finding.severity-standard  { border-left-color: var(--green); }
+.finding.severity-aggressive { border-left-color: var(--orange); }
+.finding.severity-unusual    { border-left-color: var(--red); }
+.finding-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.finding-title { font-weight: 600; font-size: 15px; }
+.severity-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.tag-standard   { background: var(--green-bg);  color: var(--green); }
+.tag-aggressive { background: var(--orange-bg); color: var(--orange); }
+.tag-unusual    { background: var(--red-bg);    color: var(--red); }
+.finding-why { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 4px; }
+
+/* Checklist */
+.negotiation-checklist { display: flex; flex-direction: column; gap: 4px; }
+.negotiation-check { display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; cursor: pointer; line-height: 1.5; }
+.negotiation-check input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
+
+/* Guide-specific styles */
+.intro-card {
+    background: var(--accent-light); border: 1px solid #93c5fd; border-radius: 10px;
+    padding: 24px 28px; margin-bottom: 32px; font-size: 15px; line-height: 1.7; color: #1e3a5f;
+}
+.intro-card h2 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+.intro-card strong { color: #1e3a5f; }
+
+.example-standard { background: var(--green-bg); border-left: 4px solid var(--green); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 8px 0; font-size: 14px; line-height: 1.6; }
+.example-aggressive { background: var(--orange-bg); border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 8px 0; font-size: 14px; line-height: 1.6; }
+.example-unusual { background: var(--red-bg); border-left: 4px solid var(--red); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 8px 0; font-size: 14px; line-height: 1.6; }
+.example-standard strong { color: var(--green); }
+.example-aggressive strong { color: var(--orange); }
+.example-unusual strong { color: var(--red); }
+
+.why-box { background: var(--purple-bg); border: 1px solid #c4b5fd; border-radius: 8px; padding: 14px 18px; margin: 12px 0 0; font-size: 14px; line-height: 1.6; }
+.why-box strong { color: var(--purple); }
+
+.comparison-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; }
+.comparison-table th { background: var(--bg); padding: 10px 16px; text-align: left; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 2px solid var(--border); }
+.comparison-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+
+.guide-nav { display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+.guide-nav a { display: inline-block; padding: 10px 20px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; transition: background 0.15s; }
+.guide-nav a:hover { background: #1e3a8a; }
+
+.math-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin: 8px 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; }
+
+@media print {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 16px; }
+    .section { page-break-inside: avoid; }
+    .finding { break-inside: avoid; }
+    body { font-size: 12px; }
+}
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h1>LegalOS</h1>
+    <p class="subtitle">SSA Guide</p>
+    <nav>
+        <a href="#intro">What Is an SSA</a>
+        <a href="#investment">Investment Mechanics</a>
+        <a href="#conditions">Conditions Precedent</a>
+        <a href="#reps">Representations &amp; Warranties</a>
+        <a href="#covenants">Covenants</a>
+        <a href="#closing">Closing Mechanics</a>
+        <a href="#checklist">SSA Review Checklist</a>
+    </nav>
+    <div class="risk-legend">
+        <h3>Severity Guide</h3>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Standard — what you want</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Aggressive — negotiate</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span> Unusual — walk away or lawyer up</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <h3 style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">Other Guides</h3>
+        <a href="guide_term_sheet.html">Term Sheet Guide</a>
+        <a href="guide_sha.html">SHA Guide</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+    <div class="doc-header">
+        <h1>Share Subscription Agreement Explainer</h1>
+        <p class="doc-type">A plain-English guide for Indian startup founders</p>
+    </div>
+
+    <!-- Intro -->
+    <div class="intro-card" id="intro">
+        <h2>What is a Share Subscription Agreement (SSA)?</h2>
+        <p>The SSA is the <strong>transactional document</strong> — it's the contract where the investor agrees to buy shares and the company agrees to issue them. While the SHA governs the ongoing relationship between shareholders, the SSA handles the <strong>mechanics of the investment itself</strong>: what's being bought, at what price, under what conditions, and what representations the company is making.</p>
+        <p style="margin-top: 8px;"><strong>How it differs from the SHA:</strong></p>
+
+        <table class="comparison-table" style="margin-top: 12px;">
+            <thead>
+                <tr>
+                    <th>Aspect</th>
+                    <th>SHA</th>
+                    <th>SSA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Purpose</td>
+                    <td>Governs ongoing shareholder relationship</td>
+                    <td>Governs the investment transaction</td>
+                </tr>
+                <tr>
+                    <td>Duration</td>
+                    <td>Survives until new SHA or exit</td>
+                    <td>Mostly spent after closing (except reps &amp; warranties survive)</td>
+                </tr>
+                <tr>
+                    <td>Key content</td>
+                    <td>Board rights, reserved matters, transfer restrictions, exit</td>
+                    <td>Investment mechanics, CPs, reps &amp; warranties, covenants</td>
+                </tr>
+                <tr>
+                    <td>Who signs</td>
+                    <td>All shareholders (founders + all investors)</td>
+                    <td>Company, founders, and the new investor</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>In India, the SSA and SHA are sometimes combined into a single document (SSHA — Share Subscription and Shareholders' Agreement). Whether separate or combined, the concepts covered here are always present.</p>
+    </div>
+
+    <!-- Investment Mechanics -->
+    <div class="section" id="investment">
+        <div class="section-header">
+            <h2>Investment Mechanics</h2>
+        </div>
+        <p class="section-summary">What securities are being issued, at what price, and the technical structure of the investment.</p>
+
+        <p class="finding-why">Indian startups typically issue <strong>CCPS (Compulsorily Convertible Preference Shares)</strong> to investors. These are preferred shares that automatically convert to equity shares at a future date or event. The conversion ratio, dividend rights, and conversion triggers are critical details.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">CCPS with standard conversion, clear pricing</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">CCPS convert to equity 1:1 at IPO or at the end of 20 years (the maximum allowed under the Companies Act 2013). Conversion price equals subscription price. Dividend is non-cumulative at 0.01% (nominal, per RBI requirements for foreign investment). Anti-dilution adjustments are the only thing that changes the conversion ratio.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "The Company shall issue 1,00,000 Series A CCPS at ₹1,000 per share (face value ₹10, premium ₹990). Conversion: 1:1 into equity shares, mandatory on the earlier of a Qualified IPO or 20 years from issuance. Dividend: 0.01% non-cumulative."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">OCPS or redeemable preference shares</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Optionally Convertible Preference Shares (OCPS) give the investor the choice to convert to equity or redeem for cash. This is problematic for foreign investors under FEMA — RBI requires foreign investment in Indian startups to be in equity or compulsorily convertible instruments. OCPS from foreign investors may violate FEMA regulations.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Issuance of 1,00,000 Series A OCPS at ₹1,000 per share. Investor may elect to convert to equity or redeem at Investment Amount + 8% cumulative dividend." If the investor is a foreign fund, this structure may not comply with FEMA pricing guidelines and could require RBI approval. The cumulative dividend is also a cash drain.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Variable conversion ratio or step-down pricing</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">The conversion ratio changes based on company performance — if you don't hit certain milestones, the investor's conversion price drops (they get more shares). This is a performance ratchet that can massively dilute founders if targets aren't met.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Conversion ratio: 1:1 if the Company achieves ARR of ₹10 Cr by March 2026; 1:1.5 if ARR is between ₹5 Cr and ₹10 Cr; 1:2 if ARR is below ₹5 Cr." If you miss targets, each CCPS converts to 2 equity shares instead of 1 — effectively halving the price the investor paid and doubling their ownership.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> The security type matters for FEMA compliance (if you have foreign investors), tax treatment, and your cap table. CCPS with 1:1 conversion is the clean, standard structure. OCPS creates redemption liability. Variable conversion ratios create uncertainty and potentially massive dilution. Always verify with your lawyer that the instrument structure complies with Companies Act 2013 and FEMA requirements.
+        </div>
+    </div>
+
+    <!-- Conditions Precedent -->
+    <div class="section" id="conditions">
+        <div class="section-header">
+            <h2>Conditions Precedent</h2>
+        </div>
+        <p class="section-summary">The checklist of items that must be completed before the investor is obligated to send the money.</p>
+
+        <p class="finding-why">Conditions Precedent (CPs) in the SSA are more detailed than those in the term sheet. They specify exactly what corporate actions, regulatory filings, and document deliveries must happen before closing. A well-drafted CP list has a clear <strong>long-stop date</strong> — a deadline after which either party can walk away if CPs haven't been satisfied.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Specific CP list with 30-45 day long-stop</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">CPs are concrete, achievable actions within the company's control: board resolutions, shareholder approvals, regulatory filings (Form PAS-3, MGT-14), secretary certificate, legal opinion letter. Long-stop date is 30-45 days. CPs that are the investor's responsibility are listed separately.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Company CPs: (1) Board resolution approving allotment of CCPS, (2) Special resolution for preferential allotment (Section 62(1)(c)), (3) Valuation report from registered valuer, (4) Filing of MGT-14 with ROC, (5) KYC and bank account details. Investor CPs: (1) Board/IC approval of the Investor. Long-stop date: 45 days from execution."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Vague CPs or no long-stop date</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">CPs include subjective conditions ("satisfactory completion of due diligence," "no Material Adverse Change") or there's no long-stop date — meaning the deal can stay in limbo indefinitely while CPs are "being worked on."</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "CPs: (1) Completion of due diligence to the Investor's satisfaction, (2) No Material Adverse Change since the date of the Term Sheet, (3) Such other conditions as the Investor may reasonably require." The catch-all at (3) is an open-ended escape hatch. No long-stop date means you're waiting at the investor's pleasure.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">CPs that require resolving pre-existing issues at founder's cost</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">CPs require the company/founders to resolve complex issues before closing — past regulatory non-compliance, outstanding litigation, tax reassessments — with all costs borne by founders personally. These should have been flagged (and priced in) during the term sheet stage.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "CPs: (1) Resolution of all pending tax proceedings, (2) Regularization of past non-compliance with FEMA, (3) Personal indemnity from Promoters for all pre-closing liabilities. All costs of compliance to be borne by the Promoters." These CPs can take months to resolve, cost lakhs in legal/tax fees, and if they can't be resolved, the deal falls through after you've spent the money.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> CPs determine the gap between "signing" and "closing" — between the promise and the money. Vague CPs give the investor an exit ramp. Missing long-stop dates leave you in limbo. CPs that require resolving complex issues at your cost can drain resources before you even receive the investment. Push for a closed list of specific, achievable CPs with a 30-45 day long-stop date.
+        </div>
+    </div>
+
+    <!-- Reps & Warranties -->
+    <div class="section" id="reps">
+        <div class="section-header">
+            <h2>Representations &amp; Warranties</h2>
+        </div>
+        <p class="section-summary">Statements of fact about the company that, if untrue, can trigger indemnification claims.</p>
+
+        <p class="finding-why">Representations and warranties ("reps") are factual statements that the company and founders make about the state of the business — corporate existence, ownership of IP, compliance with laws, accuracy of financial statements, no undisclosed liabilities, etc. If any rep turns out to be untrue, the investor can claim damages under the indemnification clause.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Factual reps with knowledge qualifiers and disclosure schedule</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Reps are statements of verifiable fact — the company is duly incorporated, the cap table is accurate, financial statements fairly represent the company's position. Key reps are qualified with "to the best of the Promoter's knowledge" and a disclosure schedule lists known exceptions. Reps survive for 18-24 months post-closing.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "The Company represents that: (a) it is duly incorporated under the Companies Act 2013, (b) the Financial Statements fairly represent the Company's financial position, (c) to the best of the Promoters' knowledge, there is no pending litigation (except as disclosed in Schedule X). Reps survive for 18 months from Closing."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Absolute reps without qualifiers, broad scope</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Reps are stated as absolute facts without "to the best of knowledge" qualifiers. Scope extends to things founders can't realistically verify — "the Company has complied with all applicable laws at all times" or "there are no undisclosed liabilities of any kind." No disclosure schedule to carve out known issues.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "The Company and the Promoters represent and warrant that: (a) The Company has at all times complied with all applicable Laws, (b) There are no undisclosed liabilities, contingent or otherwise, (c) No IP of the Company infringes any third-party rights." No startup can guarantee absolute compliance with all laws at all times. This creates indemnity exposure for things founders couldn't have known about.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Forward-looking reps or personal founder reps</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">Reps include forward-looking statements (projections, future compliance) or personal statements about founders' financial status, other investments, and personal legal history. Reps survive indefinitely (no time limit).</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "The Promoters represent that: (a) the Company will achieve ARR of ₹5 Cr within 12 months, (b) the Promoters have no personal debts exceeding ₹10 lakhs, (c) the Promoters have never been involved in any legal proceedings of any nature. Representations shall survive indefinitely." Forward-looking reps are predictions, not facts — breaching them triggers indemnity for missing a forecast. Indefinite survival means claims can come years later.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Reps are the foundation for indemnification claims. Every rep is a potential liability. Insist on: (1) "to the best of knowledge" qualifiers for anything you can't independently verify, (2) a disclosure schedule to carve out known issues, (3) a reasonable survival period (18-24 months), (4) no forward-looking reps (projections belong in the business plan, not in legal warranties).
+        </div>
+    </div>
+
+    <!-- Covenants -->
+    <div class="section" id="covenants">
+        <div class="section-header">
+            <h2>Covenants</h2>
+        </div>
+        <p class="section-summary">Promises about what the company will or won't do — before closing and on an ongoing basis.</p>
+
+        <p class="finding-why">Covenants are forward-looking promises, unlike reps (which are statements about the present/past). They come in two types: <strong>pre-closing covenants</strong> (what you must/must not do between signing and closing) and <strong>ongoing covenants</strong> (obligations that continue after closing). They can be <strong>affirmative</strong> (things you promise to do) or <strong>negative</strong> (things you promise not to do).</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Standard pre-closing and ongoing covenants</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Pre-closing: operate the business in ordinary course, don't issue new shares, don't take on material debt, don't enter into unusual contracts. Ongoing: maintain books and records, comply with applicable laws, maintain insurance, provide agreed information to the investor.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Pre-Closing Covenants: (a) Operate in ordinary course of business, (b) Not issue any shares or securities, (c) Not incur debt exceeding ₹25 lakhs, (d) Not enter into related-party transactions. Ongoing Covenants: (a) Maintain proper books of accounts, (b) Comply with all applicable laws, (c) Maintain D&amp;O insurance."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Restrictive pre-closing covenants, broad negative covenants</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Pre-closing covenants are so restrictive that normal business operations become difficult — no new hires, no new contracts above a low threshold, no capex. Ongoing negative covenants duplicate the reserved matters list but as contractual obligations (breach triggers indemnity, not just a veto).</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Pre-Closing: (a) Not hire any employee with CTC above ₹10 LPA, (b) Not enter any contract above ₹5 lakhs, (c) Not make any capital expenditure above ₹2 lakhs. Ongoing: (d) Not change the business model, (e) Not expand to any new geography, (f) Not grant any ESOP." If closing takes 60 days, these pre-closing covenants can effectively freeze your business.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Personal covenants on founders</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">Covenants extend to founders personally — maintaining a minimum net worth, not taking on personal debt, not investing in any other business, not traveling outside India without notice. These go beyond corporate governance into personal control.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Promoter Covenants: (a) Maintain personal net worth of at least ₹50 lakhs, (b) Not incur personal borrowings exceeding ₹10 lakhs, (c) Not acquire any interest in any other business entity, (d) Provide 30 days' notice before any international travel exceeding 14 days." These are personal lifestyle restrictions, not business covenants.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Covenants are contractual obligations — breaching them triggers indemnification liability or can even be grounds for termination. Pre-closing covenants that are too restrictive can freeze your business during the signing-to-closing gap. Personal covenants on founders cross the line from corporate governance into control. Keep pre-closing covenants to genuine business preservation, and resist any personal lifestyle covenants.
+        </div>
+    </div>
+
+    <!-- Closing Mechanics -->
+    <div class="section" id="closing">
+        <div class="section-header">
+            <h2>Closing Mechanics</h2>
+        </div>
+        <p class="section-summary">How the actual investment happens — simultaneous vs tranched, and the critical long-stop date.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Simultaneous closing, single tranche</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">All CPs are satisfied, all documents are signed, and the full investment amount is wired in a single tranche. Shares are allotted within a few days. Clean and simple — once it closes, it's done.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Closing: Upon satisfaction of all CPs, the Investor shall transfer ₹10 Cr to the Company's designated bank account. The Company shall allot CCPS within 5 business days of receipt and file PAS-3 with the ROC within 15 days. Long-stop date: 45 days from execution."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Tranched closing tied to milestones</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Investment is split into 2-3 tranches, with subsequent tranches conditional on hitting milestones (revenue targets, product launches, hiring goals). This means you've given all the governance rights for the full round, but only received partial funding. If you miss a milestone, the investor can withhold the remaining tranches.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Tranche 1: ₹5 Cr at Closing. Tranche 2: ₹3 Cr upon Company achieving ARR of ₹3 Cr by Q2 FY27. Tranche 3: ₹2 Cr upon Company achieving ARR of ₹8 Cr by Q4 FY27. Investor rights based on full ₹10 Cr investment from Closing." You give 20% ownership rights immediately but receive only 50% of the money upfront.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">No long-stop date, or investor-only termination right</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">No long-stop date means the deal can stay open indefinitely. Or the termination right is one-sided — only the investor can walk away if CPs aren't met by the long-stop date, but the company cannot. You're locked in while the investor keeps their options open.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "The Investor may terminate this Agreement at any time prior to Closing if any CP has not been satisfied. The Company shall not have the right to terminate this Agreement." Combined with exclusivity that may still be running, this means you're trapped — you can't close with this investor (because they're delaying), and you can't go to anyone else (because of exclusivity).
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Closing mechanics determine when you actually get the money in your bank account. Tranched investments create ongoing dependency on the investor for committed capital. Missing a long-stop date (or not having one) can leave you in deal limbo for months. Push for: single-tranche closing, a clear 30-45 day long-stop date, and mutual termination rights if CPs aren't met.
+        </div>
+    </div>
+
+    <!-- Checklist -->
+    <div class="section" id="checklist">
+        <div class="section-header">
+            <h2>SSA Review Checklist</h2>
+        </div>
+        <p class="section-summary">Walk through these items before signing your SSA.</p>
+
+        <div class="negotiation-checklist">
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Securities are CCPS with 1:1 conversion</strong> — Not OCPS or redeemable preference shares. Conversion ratio is fixed (adjusted only for anti-dilution). FEMA-compliant for foreign investors.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Conditions Precedent are specific and achievable</strong> — Closed list, no catch-all. No subjective CPs like "satisfactory diligence." Company CPs and Investor CPs listed separately.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Long-stop date is 30-45 days with mutual termination rights</strong> — Both parties can walk away if CPs aren't met. Not just the investor.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Representations have "to the best of knowledge" qualifiers</strong> — For anything you can't independently verify. Disclosure schedule lists known exceptions. No forward-looking reps.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Rep survival period is 18-24 months</strong> — Not indefinite. Fundamental reps (title, authority) can survive longer (36 months) but should still have a limit.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Pre-closing covenants don't freeze the business</strong> — Reasonable thresholds for ordinary-course operations. No blanket ban on hiring, contracts, or expenses.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>No personal covenants on founders</strong> — No personal net worth requirements, personal debt restrictions, or travel notification obligations.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Investment is single-tranche, not milestone-based</strong> — Full investment at closing. If tranched, governance rights are proportional to money received, not the total commitment.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>SSA and SHA are consistent</strong> — Cross-check valuation, ESOP, board composition, and reserved matters between the two documents. Inconsistencies create disputes later.</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Cross-links -->
+    <div class="guide-nav">
+        <a href="guide_sha.html">&larr; SHA Guide</a>
+        <a href="guide_term_sheet.html">Term Sheet Guide</a>
+    </div>
+
+    <!-- Footer -->
+    <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
+        Generated by LegalOS. This guide is for educational purposes only and does not constitute legal advice. The examples are illustrative and based on common market practices in Indian venture capital. Always consult with a qualified lawyer before signing any investment documents.
+    </div>
+</div>
+
+</body>
+</html>

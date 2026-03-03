@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalOS — Shareholders' Agreement Explainer for Founders</title>
+    <style>
+/* LegalOS Report — Professional Legal Aesthetic */
+
+:root {
+    --bg: #fafaf9;
+    --card-bg: #ffffff;
+    --text: #1c1917;
+    --text-muted: #78716c;
+    --border: #e7e5e4;
+    --accent: #1e40af;
+    --accent-light: #dbeafe;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --yellow: #ca8a04;
+    --yellow-bg: #fefce8;
+    --orange: #ea580c;
+    --orange-bg: #fff7ed;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --sidebar-w: 280px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar h1 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.sidebar .subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
+
+.sidebar nav a {
+    display: block;
+    padding: 8px 12px;
+    margin-bottom: 2px;
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.15s;
+}
+
+.sidebar nav a:hover { background: var(--accent-light); }
+
+.risk-legend { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+.risk-legend h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Main content */
+.main { margin-left: var(--sidebar-w); padding: 32px 48px; max-width: 960px; }
+.doc-header { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid var(--border); }
+.doc-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.doc-header .doc-type { font-size: 14px; color: var(--text-muted); }
+
+/* Sections */
+.section { margin-bottom: 32px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.section-header h2 { font-size: 22px; font-weight: 700; }
+.section-summary { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
+
+/* Findings */
+.findings { display: flex; flex-direction: column; gap: 8px; }
+.finding { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; border-left: 4px solid var(--border); }
+.finding.severity-standard  { border-left-color: var(--green); }
+.finding.severity-aggressive { border-left-color: var(--orange); }
+.finding.severity-unusual    { border-left-color: var(--red); }
+.finding-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.finding-title { font-weight: 600; font-size: 15px; }
+.severity-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.tag-standard   { background: var(--green-bg);  color: var(--green); }
+.tag-aggressive { background: var(--orange-bg); color: var(--orange); }
+.tag-unusual    { background: var(--red-bg);    color: var(--red); }
+.finding-why { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 4px; }
+
+/* Checklist */
+.negotiation-checklist { display: flex; flex-direction: column; gap: 4px; }
+.negotiation-check { display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; cursor: pointer; line-height: 1.5; }
+.negotiation-check input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
+
+/* Guide-specific styles */
+.intro-card {
+    background: var(--accent-light); border: 1px solid #93c5fd; border-radius: 10px;
+    padding: 24px 28px; margin-bottom: 32px; font-size: 15px; line-height: 1.7; color: #1e3a5f;
+}
+.intro-card h2 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+.intro-card strong { color: #1e3a5f; }
+
+.example-standard { background: var(--green-bg); border-left: 4px solid var(--green); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 8px 0; font-size: 14px; line-height: 1.6; }
+.example-aggressive { background: var(--orange-bg); border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 8px 0; font-size: 14px; line-height: 1.6; }
+.example-unusual { background: var(--red-bg); border-left: 4px solid var(--red); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 8px 0; font-size: 14px; line-height: 1.6; }
+.example-standard strong { color: var(--green); }
+.example-aggressive strong { color: var(--orange); }
+.example-unusual strong { color: var(--red); }
+
+.why-box { background: var(--purple-bg); border: 1px solid #c4b5fd; border-radius: 8px; padding: 14px 18px; margin: 12px 0 0; font-size: 14px; line-height: 1.6; }
+.why-box strong { color: var(--purple); }
+
+.timeline-step { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.timeline-step:last-child { border-bottom: none; }
+.timeline-number { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.timeline-number.active { background: var(--green); }
+.timeline-content h4 { font-weight: 600; margin-bottom: 2px; }
+.timeline-content p { color: var(--text-muted); font-size: 13px; }
+
+.guide-nav { display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+.guide-nav a { display: inline-block; padding: 10px 20px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; transition: background 0.15s; }
+.guide-nav a:hover { background: #1e3a8a; }
+
+@media print {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 16px; }
+    .section { page-break-inside: avoid; }
+    .finding { break-inside: avoid; }
+    body { font-size: 12px; }
+}
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h1>LegalOS</h1>
+    <p class="subtitle">SHA Guide</p>
+    <nav>
+        <a href="#intro">What Is an SHA</a>
+        <a href="#timeline">Where SHA Fits</a>
+        <a href="#board">Board Rights &amp; Governance</a>
+        <a href="#reserved">Reserved Matters</a>
+        <a href="#transfers">Transfer Restrictions</a>
+        <a href="#information">Information &amp; Inspection</a>
+        <a href="#founder-obligations">Founder Obligations</a>
+        <a href="#exit">Exit &amp; Deemed Liquidation</a>
+        <a href="#indemnification">Indemnification</a>
+        <a href="#disputes">Dispute Resolution</a>
+        <a href="#checklist">SHA Review Checklist</a>
+    </nav>
+    <div class="risk-legend">
+        <h3>Severity Guide</h3>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Standard — what you want</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Aggressive — negotiate</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span> Unusual — walk away or lawyer up</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <h3 style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">Other Guides</h3>
+        <a href="guide_term_sheet.html">Term Sheet Guide</a>
+        <a href="guide_ssa.html">SSA Guide</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+    <div class="doc-header">
+        <h1>Shareholders' Agreement Explainer</h1>
+        <p class="doc-type">A plain-English guide for Indian startup founders</p>
+    </div>
+
+    <!-- Intro -->
+    <div class="intro-card" id="intro">
+        <h2>What is a Shareholders' Agreement (SHA)?</h2>
+        <p>The SHA is the <strong>binding, long-form agreement</strong> that governs the relationship between the company's shareholders — founders, investors, and sometimes ESOP holders. While the term sheet was a 2-5 page outline of intentions, the SHA is typically <strong>40-80 pages</strong> of detailed, legally enforceable terms.</p>
+        <p style="margin-top: 8px;">The SHA covers governance (board, voting, reserved matters), transfer restrictions (what happens when someone wants to sell shares), founder obligations (non-compete, key-man, IP assignment), and exit provisions. It survives until a new SHA replaces it (usually at the next funding round) or the company exits.</p>
+        <p style="margin-top: 8px;"><strong>Key difference from term sheet:</strong> Everything in the SHA is binding. The concepts you negotiated at the term sheet stage are now written in precise legal language — and the details matter. A small wording change can dramatically shift the balance of power.</p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="section" id="timeline">
+        <div class="section-header">
+            <h2>Where the SHA Fits</h2>
+        </div>
+        <p class="section-summary">The SHA is negotiated after the term sheet and signed alongside the SSA at closing.</p>
+
+        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px;">
+            <div class="timeline-step">
+                <div class="timeline-number">1</div>
+                <div class="timeline-content">
+                    <h4>Term Sheet Signed</h4>
+                    <p>Non-binding agreement on key terms. Exclusivity period begins.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="timeline-number">2</div>
+                <div class="timeline-content">
+                    <h4>Due Diligence</h4>
+                    <p>Investor's lawyers review your corporate records, contracts, IP, tax filings, and compliance.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="timeline-number active">3</div>
+                <div class="timeline-content">
+                    <h4>SHA &amp; SSA Drafting &larr; you are here</h4>
+                    <p>Investor's lawyers draft the SHA and SSA. Multiple rounds of negotiation on exact wording.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="timeline-number">4</div>
+                <div class="timeline-content">
+                    <h4>Closing</h4>
+                    <p>All documents signed, CPs satisfied, money wired, shares allotted.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Board Rights -->
+    <div class="section" id="board">
+        <div class="section-header">
+            <h2>Board Rights &amp; Governance</h2>
+        </div>
+        <p class="section-summary">How the board is composed, who calls meetings, and what happens when there's a deadlock.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Founder-majority board, investor observer rights</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Board composition gives founders the majority (e.g., 2 out of 3, or 3 out of 5 seats). Investor gets one director seat plus an observer who can attend but not vote. Board meetings require 7-15 days' notice. Quorum does not require investor presence.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Board of 3 directors: 2 nominated by Promoters, 1 nominated by Investor. Investor may appoint 1 observer. Quorum: any 2 directors. Meetings with 10 business days' notice."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Investor influence over "independent" director</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Board of 5 with 2 founder seats, 2 investor seats, and 1 "mutually agreed independent." In practice, the independent is often chosen by the investor, giving them effective 3-2 control. Short meeting notice periods also favor investors.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Board of 5: 2 Promoter nominees, 2 Investor nominees, 1 Independent Director mutually agreed (in case of disagreement, to be appointed by the Investor)." The tiebreaker clause hands control to the investor.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Investor quorum requirement or casting vote</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">Quorum requires at least one investor-nominated director to be present, or the investor director gets a "casting vote" (tie-breaking vote) on all matters. This gives the minority investor control of the board.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Quorum for Board meetings shall require the presence of at least 1 Investor Director. The chairperson (nominated by the Investor) shall have a casting vote." If the investor director doesn't show up or is unavailable, no board meeting can be held — the company is paralyzed.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Board governance isn't just theoretical — it affects day-to-day decisions like bank signatories, approving contracts, and statutory filings. A quorum trap can literally prevent you from operating your company if the relationship with the investor breaks down.
+        </div>
+    </div>
+
+    <!-- Reserved Matters -->
+    <div class="section" id="reserved">
+        <div class="section-header">
+            <h2>Reserved Matters</h2>
+        </div>
+        <p class="section-summary">Actions that require investor consent, regardless of board approval.</p>
+
+        <p class="finding-why">Reserved matters (also called "affirmative vote matters" or "protective provisions") are specific actions that the company cannot take without the investor's written consent — even if the board votes unanimously in favor. They exist to protect the investor's capital, but overly broad reserved matters hand operational control to the investor.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Capital-protection reserved matters (8-12 items)</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Limited to decisions that directly affect the investor's equity: new share issuance, changes to share rights, declaring dividends, related-party transactions above a threshold, sale or merger of the company, changes to the charter (Articles/Memorandum), winding up.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> Reserved matters: (1) Issue new shares or securities, (2) Alter rights of any class of shares, (3) Amend Articles/Memorandum, (4) Related-party transactions above ₹25 lakhs, (5) Any M&amp;A transaction, (6) Take debt exceeding ₹1 Cr, (7) Declare dividends, (8) Wind up the Company.
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Operational reserved matters (20+ items)</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Expands into operational territory: hiring/firing key employees, annual budgets, changes to the business plan, entering new markets, any capex above a low threshold, opening new offices. Every significant operational decision becomes a negotiation with the investor.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> Includes the standard list plus: (9) Hire/fire any CXO or employee with CTC above ₹20 LPA, (10) Annual operating budget, (11) Capital expenditure above ₹10 lakhs, (12) Any change to the business plan, (13) Enter any new geography, (14) Any contract above ₹25 lakhs annually. This is a 20+ item veto list that covers daily operations.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Catch-all clause or "any material decision"</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">A catch-all like "any other matter that may materially affect the Company" or "any action outside the ordinary course of business." This is an open-ended veto right — the investor can claim virtually anything is "material."</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> Reserved matters include: "... (n) Any other action or decision that may have a material impact on the Company or its business." The word "material" is undefined, so the investor can block any decision by arguing it's material.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> The reserved matters list is where investors often expand their control beyond what was discussed in the term sheet. Each item on the list is a veto the investor holds. Push for a closed, specific list of 8-12 capital-protection items. Resist catch-all clauses and operational vetoes — you need to run your business without seeking permission for every hire and expense.
+        </div>
+    </div>
+
+    <!-- Transfer Restrictions -->
+    <div class="section" id="transfers">
+        <div class="section-header">
+            <h2>Transfer Restrictions</h2>
+        </div>
+        <p class="section-summary">ROFR, tag-along, drag-along — what happens when someone wants to sell shares.</p>
+
+        <p class="finding-why">Transfer restrictions control who can sell their shares, when, and to whom. The three key mechanisms are: <strong>ROFR</strong> (Right of First Refusal — existing shareholders get first dibs), <strong>Tag-along</strong> (minority shareholders can join a sale), and <strong>Drag-along</strong> (majority can force everyone to sell).</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Symmetric ROFR and tag-along</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">ROFR applies equally to all shareholders — if anyone wants to sell, others get first right to buy at the same price. Tag-along lets minority holders join a sale on the same terms. Drag-along requires 75%+ shareholder approval and only triggers in a bona fide third-party acquisition.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "ROFR: Any shareholder proposing to transfer shares shall first offer them to existing shareholders pro-rata at the proposed price. Tag-along: If a shareholder holding 50%+ of equity proposes a transfer, all other shareholders may participate pro-rata on the same terms. Drag-along: Requires approval of 75% of voting shares; sale must be at fair market value."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Asymmetric rights favoring investors</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">ROFR applies only to founder shares (not investor shares). Investor can freely transfer to affiliates or other funds without triggering ROFR. Drag-along threshold is based on investor-class approval only (not overall 75%). Founders locked in while investor has liquidity.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Promoter shares subject to ROFR and lock-in of 3 years. Investor may transfer to Affiliates without restriction. Drag-along: Investor holding majority of Series A shares may trigger a drag-along." This means the investor can force a sale even if founders disagree, as long as they hold majority of the preferred class.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Founder lock-in with no investor lock-in, punitive drag</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">Founders cannot sell any shares for 5+ years, while investor has no lock-in. Drag-along can be triggered by the investor alone at any time, and founders must sell at whatever price the investor negotiates — even below their liquidation preference.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Promoter lock-in: 5 years from Closing. Drag-along: The Investor may, at any time after 4 years, require all shareholders to sell to a bona fide purchaser at a price determined by the Investor. Promoters shall execute all transfer documents within 30 days." Founders are locked in but can be forced to sell on the investor's timeline and terms.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Transfer restrictions determine your liquidity options and exit flexibility. Insist on symmetry — if you're locked in, the investor should have comparable restrictions. Drag-along should require a meaningful approval threshold (75%+ of all shareholders, not just the investor class) and a fair minimum price (at least the liquidation preference).
+        </div>
+    </div>
+
+    <!-- Information Rights -->
+    <div class="section" id="information">
+        <div class="section-header">
+            <h2>Information &amp; Inspection Rights</h2>
+        </div>
+        <p class="section-summary">What financial and operational information the investor can demand, and when.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Quarterly financials, annual audit, standard reporting</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Company provides quarterly unaudited financials (P&L, balance sheet, cash flow), annual audited financials, and an annual budget/business plan. Investor gets reasonable notice for visits and inspections.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Company shall provide: (1) Quarterly unaudited financials within 30 days of quarter-end, (2) Annual audited financials within 90 days of year-end, (3) Annual budget before start of each financial year. Investor may inspect books with 15 days' written notice during business hours."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Monthly financials, weekly MIS, broad access</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Monthly P&L and cash flow statements, weekly MIS dashboards, customer pipeline data, access to internal Slack/communication channels, and the right to inspect at any time without notice. This creates a significant reporting burden for a small startup team.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Monthly financials within 15 days. Weekly MIS report. Access to the Company's CRM and project management tools. Right to inspect books and records at any time. Right to speak directly with any employee." The reporting load alone can distract a small team significantly.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Right to audit at company cost, personal financial disclosure</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">Investor can trigger a special audit at the company's expense at any time, access founders' personal tax returns and bank statements, and require real-time access to accounting systems.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Investor may, at any time, appoint auditors to conduct a special audit of the Company at the Company's cost. Promoters shall provide their personal income tax returns and bank statements upon request." This goes beyond corporate governance into personal surveillance territory.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Transparency is reasonable and expected, but excessive reporting creates a significant burden. Quarterly financials and annual audits are the market standard. Monthly reporting is manageable for most startups. Anything beyond that — weekly MIS, real-time system access, personal financial disclosure — should be pushed back on firmly.
+        </div>
+    </div>
+
+    <!-- Founder Obligations -->
+    <div class="section" id="founder-obligations">
+        <div class="section-header">
+            <h2>Founder Obligations</h2>
+        </div>
+        <p class="section-summary">Non-compete, key-man insurance, IP assignment, and personal guarantees.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">During-term non-compete, IP assignment, key-man clause</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Founders agree to work full-time, assign all IP created during engagement to the company, and carry key-man insurance. Non-compete during employment is standard under Indian law.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Founders shall: (1) Devote full time and attention to the Company, (2) Not engage in any Competing Business during employment, (3) Assign all IP created in connection with the Company's business, (4) Maintain key-man insurance of ₹2 Cr per founder."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Post-termination non-compete with share forfeiture link</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Non-compete extends 2 years post-departure and is linked to share forfeiture — breaching it triggers bad-leaver provisions. Broad IP assignment covers even personal projects. High key-man insurance with premium paid by the founder.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Non-compete: 24 months post-departure. Breach triggers Bad Leaver buyback at par value. All IP created by Founder during and for 12 months after engagement shall vest in the Company." The 12-month post-departure IP tail is a trap — anything you build after leaving could be claimed by the company.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Personal guarantees on company obligations</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">Founders are asked to personally guarantee the company's obligations — repayment of investment if certain events occur, indemnification liabilities, or even the company's tax obligations. This pierces the corporate veil and puts founders' personal assets at risk.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Promoters shall personally guarantee the Company's obligations under this Agreement, including any indemnification payments. In the event of a breach of warranty, the Promoters shall be jointly and severally liable." This converts limited-liability company investment into personal liability for the founders.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Full-time commitment and IP assignment are reasonable asks. But personal guarantees on corporate obligations fundamentally change the nature of the deal — you're no longer just giving up equity, you're putting your personal assets on the line. Under Section 27 of the Indian Contract Act, post-employment non-competes are generally void, but when linked to share forfeiture they become de facto enforceable.
+        </div>
+    </div>
+
+    <!-- Exit Provisions -->
+    <div class="section" id="exit">
+        <div class="section-header">
+            <h2>Exit Provisions &amp; Deemed Liquidation</h2>
+        </div>
+        <p class="section-summary">How and when the investor exits, and what happens if the company doesn't IPO or get acquired.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Standard exit via IPO or M&amp;A, no forced timeline</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">The SHA anticipates exit through IPO or third-party sale. No fixed deadline. Deemed liquidation event triggered only by actual sale/merger of the company. Founders and investors work together on exit timing.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Exit: The Company shall use best efforts to achieve a Qualified IPO or strategic sale. Deemed Liquidation Event means: (a) sale of substantially all assets, (b) merger where existing shareholders hold less than 50% post-merger."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Put option after 5-7 years</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Investor has a "put option" — after a fixed period (5-7 years), they can force the company or founders to buy back their shares at a pre-agreed price (often investment amount + IRR). This creates a ticking clock and a potential cash liability.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "If no Exit Event occurs within 6 years of Closing, the Investor shall have the right to put its shares to the Company at a price equal to the Investment Amount plus an IRR of 15%." If you raised ₹10 Cr, you'd owe approximately ₹23 Cr after 6 years at 15% IRR — payable from company funds or personally.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Put option on founders personally, short timeline</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">The put option is exercisable against the founders personally (not just the company), after only 3-4 years, at investment + high IRR. The founders become personally liable for the investor's return. This is quasi-debt, not equity.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "If no Exit Event occurs within 4 years, Investor may put shares to the Promoters personally at Investment Amount + 20% IRR. Promoters shall complete the buyback within 90 days." At 20% IRR on ₹10 Cr for 4 years, founders personally owe ₹20.7 Cr. This isn't venture capital — it's a personal loan disguised as equity.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Put options convert equity investment into quasi-debt. If the company hasn't achieved an exit, forcing a buyback can drain the company's cash reserves or saddle founders with personal liability. At minimum, push back on: personal liability (put should be on the company only), short timelines (8-10 years minimum), and unreasonable IRR expectations. Note that SEBI and RBI regulations around buybacks and foreign investment add complexity for Indian companies.
+        </div>
+    </div>
+
+    <!-- Indemnification -->
+    <div class="section" id="indemnification">
+        <div class="section-header">
+            <h2>Indemnification</h2>
+        </div>
+        <p class="section-summary">Who pays when things go wrong — liability caps, time limits, and joint-and-several liability.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Capped indemnity with time limit and baskets</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Founders' indemnification liability is capped at the investment amount (or a percentage). Claims must be made within 18-24 months of closing. A de minimis basket (minimum claim size) and aggregate basket (threshold before indemnity kicks in) prevent nuisance claims.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Indemnification cap: 100% of Investment Amount. Survival period: 18 months from Closing (36 months for tax and fundamental warranties). De minimis: ₹5 lakhs per claim. Aggregate basket: ₹25 lakhs (claims must exceed this before indemnity applies)."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Uncapped for fundamental warranties, joint-and-several</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">No cap on indemnity for "fundamental" warranties (which are defined broadly). Founders are jointly and severally liable — the investor can claim the full amount from any one founder. No aggregate basket.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Indemnification: uncapped for breach of Fundamental Warranties (including title, authority, IP ownership, tax compliance, and any warranty relating to the Company's financial statements). Promoters jointly and severally liable." "Fundamental" is stretched to cover most warranties, effectively making the cap meaningless.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Unlimited indemnity, no time limit, personal assets</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">No cap on any warranty. No survival period limit (claims can come years later). Founders' personal assets are explicitly included. Indemnity covers consequential and indirect damages.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Promoters shall indemnify the Investor against all losses, including consequential and indirect damages, without any limitation on amount or time. Promoters' personal assets shall be available to satisfy any indemnification claim." This is an unlimited personal liability clause — the opposite of limited-liability company protection.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Indemnification is the investor's insurance policy against misrepresentation. A reasonable cap (1x investment), time limit (18-24 months), and basket mechanism is fair. Uncapped, unlimited indemnity with personal asset exposure is disproportionate for an equity investment — it makes the founders' downside unlimited while the investor's downside is capped at their investment.
+        </div>
+    </div>
+
+    <!-- Dispute Resolution -->
+    <div class="section" id="disputes">
+        <div class="section-header">
+            <h2>Dispute Resolution</h2>
+        </div>
+        <p class="section-summary">Where and how disputes are resolved — Indian courts, Indian arbitration, or offshore.</p>
+
+        <div class="findings">
+            <div class="finding severity-standard">
+                <div class="finding-header">
+                    <span class="finding-title">Indian-seated arbitration under Arbitration Act</span>
+                    <span class="severity-tag tag-standard">Standard</span>
+                </div>
+                <p class="finding-why">Arbitration seated in Mumbai, Delhi, or Bangalore under the Arbitration and Conciliation Act, 1996. Indian governing law. 3 arbitrators (one chosen by each side, third mutually appointed). Costs shared or loser-pays. This is the market standard for Indian venture deals.</p>
+                <div class="example-standard">
+                    <strong>Example:</strong> "Governing law: India. Disputes resolved by arbitration seated in Mumbai, under the Arbitration and Conciliation Act, 1996. 3 arbitrators: 1 appointed by each party, presiding arbitrator mutually agreed. Language: English."
+                </div>
+            </div>
+            <div class="finding severity-aggressive">
+                <div class="finding-header">
+                    <span class="finding-title">Singapore/London arbitration</span>
+                    <span class="severity-tag tag-aggressive">Aggressive</span>
+                </div>
+                <p class="finding-why">Arbitration seated in Singapore (SIAC) or London (LCIA) — more expensive for the Indian founder. Travel, foreign counsel, and higher institutional fees increase the cost of pursuing or defending a claim. Foreign investors often prefer this for neutrality and enforcement.</p>
+                <div class="example-aggressive">
+                    <strong>Example:</strong> "Disputes resolved by arbitration under SIAC Rules, seated in Singapore. Governing law: Singapore." An SIAC arbitration can cost ₹50 lakhs to ₹2 Cr in fees and travel — a significant barrier for a startup founder.
+                </div>
+            </div>
+            <div class="finding severity-unusual">
+                <div class="finding-header">
+                    <span class="finding-title">Foreign courts exclusive jurisdiction</span>
+                    <span class="severity-tag tag-unusual">Unusual</span>
+                </div>
+                <p class="finding-why">Exclusive jurisdiction of foreign courts (not just foreign-seated arbitration). This means you'd need to litigate in a foreign country's court system — far more expensive and logistically difficult than even offshore arbitration.</p>
+                <div class="example-unusual">
+                    <strong>Example:</strong> "Exclusive jurisdiction: Courts of England and Wales. Governing law: English law." As an Indian founder, litigating in English courts requires UK-qualified lawyers, travel, and navigating an unfamiliar legal system. This is rare in Indian venture deals and should be resisted.
+                </div>
+            </div>
+        </div>
+        <div class="why-box">
+            <strong>Why it matters:</strong> Dispute resolution determines the practical enforceability of your rights. If it's too expensive or logistically difficult to pursue a claim, your contractual rights are only theoretical. Indian-seated arbitration is the fair default — it's accessible, well-established, and enforceable. If the investor insists on foreign arbitration, negotiate for cost-sharing provisions and a reasonable institutional forum.
+        </div>
+    </div>
+
+    <!-- Checklist -->
+    <div class="section" id="checklist">
+        <div class="section-header">
+            <h2>SHA Review Checklist</h2>
+        </div>
+        <p class="section-summary">Walk through these items before signing your SHA.</p>
+
+        <div class="negotiation-checklist">
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Board composition gives founders the majority</strong> — No quorum traps. You can hold valid meetings without the investor director being present.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Reserved matters are limited to capital protection (8-12 items)</strong> — No catch-all clauses. No operational vetoes on hiring, budgets, or business plan changes.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Transfer restrictions are symmetric</strong> — If founders have a lock-in, investor has comparable restrictions. ROFR applies to all shareholders equally.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Drag-along requires 75%+ approval and fair minimum price</strong> — Investor alone cannot force a sale. Minimum price is at least the liquidation preference.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Information rights are quarterly, not weekly/monthly MIS</strong> — Annual audit is fine. No real-time system access. No personal financial disclosure.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>No personal guarantees on company obligations</strong> — Indemnity is from the company, not personally from founders. No personal liability for put options.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Non-compete is during-term only</strong> — No post-departure non-compete linked to share forfeiture. IP assignment covers only company-related work during employment.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Indemnification is capped (1x investment) with a time limit (18-24 months)</strong> — Baskets exist. No consequential damages. No joint-and-several liability.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Exit provisions don't create personal liability</strong> — No put option on founders personally. If there's a put option, it's on the company after 7+ years at a reasonable IRR.</span>
+            </label>
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>Dispute resolution is India-seated arbitration</strong> — Affordable and accessible. If foreign-seated, costs are shared.</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Cross-links -->
+    <div class="guide-nav">
+        <a href="guide_term_sheet.html">&larr; Term Sheet Guide</a>
+        <a href="guide_ssa.html">Next: SSA Guide &rarr;</a>
+    </div>
+
+    <!-- Footer -->
+    <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
+        Generated by LegalOS. This guide is for educational purposes only and does not constitute legal advice. The examples are illustrative and based on common market practices in Indian venture capital. Always consult with a qualified lawyer before signing any investment documents.
+    </div>
+</div>
+
+</body>
+</html>

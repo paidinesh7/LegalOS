@@ -14,6 +14,9 @@ venv/
 *.html
 !src/legalos/report/templates/report.html
 !examples/sample_report.html
+!examples/guide_term_sheet.html
+!examples/guide_sha.html
+!examples/guide_ssa.html
 output/
 .legalos/
 documents/*
