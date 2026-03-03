@@ -392,6 +392,37 @@ def feedback_clear() -> None:
         console.print("[dim]No feedback to clear.[/]")
 
 
+# ── Preferences ────────────────────────────────────────────────
+
+
+@cli.command()
+@click.option("--no-browser", is_flag=True, help="Don't auto-open the HTML in browser.")
+@click.option("--output-dir", "-o", type=click.Path(path_type=Path), default=None, help="Output directory (default: MyPreferences/).")
+def preferences(no_browser: bool, output_dir: Path | None) -> None:
+    """Generate a summary of what LegalOS knows about you.
+
+    Creates MyPreferences/my_preferences.md and .html with your profile,
+    feedback patterns, learnings, and an editable Additional Notes section.
+    """
+    from legalos.profile.preferences_export import write_preferences
+
+    try:
+        md_path, html_path = write_preferences(output_dir=output_dir)
+    except Exception as e:
+        print_error(f"Failed to generate preferences: {e}")
+        raise SystemExit(1)
+
+    print_success(f"Preferences written to:")
+    console.print(f"  Markdown: {md_path}")
+    console.print(f"  HTML:     {html_path}")
+
+    if not no_browser:
+        import webbrowser
+
+        webbrowser.open(html_path.resolve().as_uri())
+        console.print("[dim]Opened in browser.[/]")
+
+
 # ── Knowledge base management ──────────────────────────────────
 
 
@@ -677,7 +708,8 @@ def analyze(
     PATH can be a single file (PDF/DOCX/image) or a directory of files.
     Defaults to the documents/ folder if omitted.
     """
-    if path is None:
+    using_default = path is None
+    if using_default:
         path = Path("documents")
     if not path.exists():
         print_error(
@@ -756,7 +788,14 @@ def analyze(
         raise SystemExit(1)
 
     if not documents:
-        print_error("No supported files found.")
+        if using_default:
+            print_error(
+                "No supported files found in the documents/ folder.\n\n"
+                "  Drop your PDF, Word, or image files there and run:\n\n"
+                "    legalos analyze"
+            )
+        else:
+            print_error(f"No supported files found in '{path}'.")
         raise SystemExit(1)
 
     total_pages = sum(d.page_count for d in documents)
@@ -767,7 +806,16 @@ def analyze(
         print_warning("Very little text extracted. The document might be scanned — try an image file.")
 
     # Analyze
-    client = AnalysisClient(model_id=model_id, verbose=verbose)
+    try:
+        client = AnalysisClient(model_id=model_id, verbose=verbose)
+    except EnvironmentError:
+        print_error(
+            "ANTHROPIC_API_KEY not set.\n\n"
+            "  Get your key from https://console.anthropic.com/ then run:\n\n"
+            "    export ANTHROPIC_API_KEY=sk-ant-xxxxx\n\n"
+            "  (Replace sk-ant-xxxxx with your actual key.)"
+        )
+        raise SystemExit(1)
 
     if deep:
         # Full 9-pass analysis (existing behavior)

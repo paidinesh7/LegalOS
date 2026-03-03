@@ -202,13 +202,14 @@ def build_full_system_prompt(
     profile: Optional[FounderProfile] = None,
     feedback: Optional[FeedbackStore] = None,
     learnings: Optional[LearningsStore] = None,
+    preferences_doc: Optional[str] = None,
 ) -> str:
-    """Augment the system prompt with founder context, past feedback, and learnings.
+    """Augment the system prompt with founder context, past feedback, learnings, and preferences.
 
     Uses aggregated feedback patterns instead of raw items for
     token efficiency and prompt cache stability.
 
-    Returns base prompt unchanged if no profile/feedback/learnings exists.
+    Returns base prompt unchanged if no profile/feedback/learnings/preferences exists.
     """
     parts = [base]
 
@@ -228,6 +229,15 @@ def build_full_system_prompt(
         if block:
             parts.append("")
             parts.append(block)
+
+    if preferences_doc:
+        truncated = preferences_doc[:15_000]
+        if len(preferences_doc) > 15_000:
+            truncated += "\n[...truncated to 15,000 characters]"
+        parts.append("")
+        parts.append("<founder_preferences_document>")
+        parts.append(truncated)
+        parts.append("</founder_preferences_document>")
 
     return "\n".join(parts)
 

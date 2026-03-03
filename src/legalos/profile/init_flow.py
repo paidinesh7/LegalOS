@@ -140,4 +140,13 @@ def run_init_flow(directory: Path | None = None, legal_brief_file: Path | None =
     console.print()
     console.print(f"[bold green]✓[/] Profile saved to {path}")
 
+    # Auto-regenerate MyPreferences (non-fatal)
+    try:
+        from legalos.profile.preferences_export import write_preferences
+
+        md_path, html_path = write_preferences()
+        console.print(f"[dim]MyPreferences updated: {md_path}[/]")
+    except Exception:
+        pass
+
     return profile

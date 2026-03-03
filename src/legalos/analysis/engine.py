@@ -1,28 +1,36 @@
-"""Analysis orchestrator — runs 6 sectoral passes + explainer + impact."""
+"""Analysis orchestrator — runs 6 sectoral passes + explainer + impact + executive summary."""
 
 from __future__ import annotations
 
 from typing import Optional
 
+from pydantic import BaseModel, Field
+
 from legalos.analysis.client import AnalysisClient
 from legalos.analysis.prompts import (
+    EXECUTIVE_SUMMARY_PROMPT,
     EXPLAINER_PROMPT,
     IMPACT_PROMPT,
     REDLINE_PROMPT,
     SECTION_PROMPTS,
     SYSTEM_PROMPT,
+    build_quick_scan_prompt,
 )
 from legalos.analysis.schemas import (
     AnalysisSection,
+    ExecutiveSummary,
     ExplainerOutput,
     FeedbackInsight,
     Finding,
     FullAnalysis,
     ImpactOutput,
+    QuickScanOutput,
+    RedFlag,
     RedlineOutput,
 )
 from legalos.parsing.base import ParsedDocument
 from legalos.parsing.chunker import DocumentChunk, chunk_document
+from legalos.profile.preferences_export import load_preferences_for_analysis
 from legalos.profile.prompt_injection import (
     augment_impact_prompt,
     augment_section_prompt,
@@ -144,10 +152,13 @@ def run_analysis(
     chunks = chunk_document(combined_text)
 
     # Build augmented system prompt (cached across all passes)
-    system_prompt = build_full_system_prompt(SYSTEM_PROMPT, profile, feedback, learnings)
+    preferences_doc = load_preferences_for_analysis()
+    system_prompt = build_full_system_prompt(
+        SYSTEM_PROMPT, profile, feedback, learnings, preferences_doc=preferences_doc,
+    )
 
     sections: list[AnalysisSection] = []
-    total_steps = len(SECTION_PROMPTS) + 2  # +2 for explainer and impact
+    total_steps = len(SECTION_PROMPTS) + 3  # +3 for explainer, impact, exec summary
 
     with make_progress() as progress:
         task = progress.add_task("Analyzing document\u2026", total=total_steps)
@@ -160,10 +171,19 @@ def run_analysis(
                 prompt, profile, section_id, document_type=document_type,
                 learnings=learnings,
             )
-            section = _analyze_section_chunked(
-                client, section_id, section_name, augmented_prompt, chunks,
-                system_prompt=system_prompt,
-            )
+            try:
+                section = _analyze_section_chunked(
+                    client, section_id, section_name, augmented_prompt, chunks,
+                    system_prompt=system_prompt,
+                )
+            except Exception as e:
+                print_warning(f"{section_name} failed: {e}")
+                section = AnalysisSection(
+                    section_name=section_name,
+                    section_id=section_id,
+                    summary=f"Analysis could not be completed.",
+                    risk_level="medium",
+                )
             sections.append(section)
             progress.advance(task)
 
@@ -196,16 +216,90 @@ def run_analysis(
             impact = None
         progress.advance(task)
 
+        # Executive summary pass
+        progress.update(task, description="Generating executive summary\u2026")
+        executive_summary = None
+        try:
+            section_digest = "\n".join(
+                f"- {s.section_name} ({s.risk_level}): {s.summary}"
+                for s in sections
+            )
+            exec_prompt = (
+                EXECUTIVE_SUMMARY_PROMPT
+                + f"\n\n<section_results>\n{section_digest}\n</section_results>"
+            )
+            executive_summary = client.analyze(
+                system_prompt=system_prompt,
+                user_prompt=exec_prompt,
+                response_model=ExecutiveSummary,
+                document_text=combined_text[:100_000],
+            )
+        except Exception as e:
+            print_warning(f"Executive summary failed: {e}")
+        progress.advance(task)
+
     # Build feedback insights
     feedback_insights = _build_feedback_insights(feedback)
 
     return FullAnalysis(
         document_name=doc_name,
         document_type=document_type or "Legal Document",
+        executive_summary=executive_summary,
         sections=sections,
         explainer=explainer,
         impact=impact,
         feedback_insights=feedback_insights,
+    )
+
+
+class _QuickScanResponse(BaseModel):
+    """Internal LLM response model for quick scan."""
+
+    overall_risk: str
+    bottom_line: str
+    red_flags: list[RedFlag] = Field(default_factory=list)
+    investor_asks: list[str] = Field(default_factory=list)
+    must_negotiate: list[str] = Field(default_factory=list)
+
+
+def run_quick_analysis(
+    client: AnalysisClient,
+    documents: list[ParsedDocument],
+    profile: Optional[FounderProfile] = None,
+    feedback: Optional[FeedbackStore] = None,
+    document_type: str = "",
+    learnings: Optional[LearningsStore] = None,
+) -> QuickScanOutput:
+    """Run a single-pass quick scan for red flags and pushback items."""
+    combined_text = "\n\n---\n\n".join(doc.full_text for doc in documents)
+    doc_name = ", ".join(doc.source_path.name for doc in documents)
+
+    preferences_doc = load_preferences_for_analysis()
+    system_prompt = build_full_system_prompt(
+        SYSTEM_PROMPT, profile, feedback, learnings, preferences_doc=preferences_doc,
+    )
+
+    with make_progress() as progress:
+        task = progress.add_task("Quick scan\u2026", total=1)
+        progress.update(task, description="Scanning for red flags\u2026")
+
+        scan_result = client.analyze(
+            system_prompt=system_prompt,
+            user_prompt=build_quick_scan_prompt(document_type),
+            response_model=_QuickScanResponse,
+            document_text=combined_text[:500_000],
+            max_tokens=2048,
+        )
+        progress.advance(task)
+
+    return QuickScanOutput(
+        document_name=doc_name,
+        document_type=document_type or "Legal Document",
+        overall_risk=scan_result.overall_risk,
+        bottom_line=scan_result.bottom_line,
+        red_flags=scan_result.red_flags,
+        investor_asks=scan_result.investor_asks,
+        must_negotiate=scan_result.must_negotiate,
     )
 
 
@@ -220,7 +314,10 @@ def run_redline_analysis(
     combined_text = "\n\n---\n\n".join(doc.full_text for doc in documents)
     chunks = chunk_document(combined_text)
 
-    system_prompt = build_full_system_prompt(SYSTEM_PROMPT, profile, feedback, learnings)
+    preferences_doc = load_preferences_for_analysis()
+    system_prompt = build_full_system_prompt(
+        SYSTEM_PROMPT, profile, feedback, learnings, preferences_doc=preferences_doc,
+    )
 
     all_comments = []
     with make_progress() as progress:
