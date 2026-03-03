@@ -1,6 +1,8 @@
 # LegalOS
 
-Your AI co-pilot for reviewing fundraising documents. Drop in a term sheet or SHA, get a clause-by-clause breakdown in plain English — what's standard, what's aggressive, and what to push back on.
+An AI-powered legal review tool for Indian startup founders navigating fundraising. Term sheets, SHAs, SSAs — every document in a fundraise has clauses that can shift control, economics, or flexibility away from founders. LegalOS helps you stay on top of all of it.
+
+Drop in a document, get a clause-by-clause breakdown in plain English — what's standard, what's aggressive, and what to push back on. The more you use it, the better it gets at flagging what matters to you.
 
 Built for Indian startup founders. Powered by Claude.
 
@@ -61,11 +63,21 @@ All questions are optional — press Enter to skip any of them.
 
 ---
 
-## See It In Action
+## Examples — Guides & Sample Reports
 
-Want to know what a LegalOS report looks like before running your own analysis?
+The `examples/` folder has everything you need to understand what LegalOS does, no API key required.
 
-1. **Open the sample report** — open `examples/sample_report.html` in your browser. No API key needed. This is a real analysis of a Series A term sheet.
+### Founder Guides
+
+Plain-English explainers for the three core fundraising documents. Each clause is shown as a comparison table — what's standard, what's aggressive, what's unusual — with real ₹ examples and founder impact.
+
+- **[Term Sheet Guide](examples/guide_term_sheet.html)** — valuation, liquidation preference, anti-dilution, board control, ESOP, vesting, non-compete, CPs, exclusivity
+- **[SHA Guide](examples/guide_sha.html)** — board governance, reserved matters, transfer restrictions, information rights, founder obligations, exit provisions, indemnification, dispute resolution
+- **[SSA Guide](examples/guide_ssa.html)** — investment mechanics (CCPS vs OCPS), conditions precedent, reps & warranties, covenants, closing mechanics
+
+### Sample Report
+
+1. **Open the sample report** — open `examples/sample_report.html` in your browser. This is a real analysis of a Series A term sheet.
 2. **Or generate one yourself** — run `legalos analyze examples/` to analyze the sample term sheet and produce a fresh report.
 
 Check `examples/README.md` for what to look for in the report.
@@ -199,50 +211,30 @@ legalos kb search "anti-dilution"
 
 ---
 
-## Feedback — How LegalOS Learns
+## Feedback — Teaching LegalOS Your Preferences
 
-LegalOS gets better the more you use it. After every analysis, it asks for quick feedback and uses that to improve future runs.
+LegalOS adapts to what matters for your deals. Every analysis ends with a quick feedback loop — tell it what it missed and what wasn't relevant, and future analyses adjust automatically. Over time, LegalOS learns your priorities so you don't have to repeat yourself.
 
-### What happens after analysis
+### How to give feedback
 
-Once the report opens, you'll see 4 prompts in the terminal:
+**After every analysis** (in the terminal):
 
-1. **Did LegalOS miss anything important?** — comma-separated list of things it should have caught (e.g. "Full ratchet anti-dilution, Founder vesting acceleration")
+1. **Did LegalOS miss anything important?** — e.g. "Full ratchet anti-dilution, Founder vesting acceleration"
 2. **Any findings that were NOT relevant?** — things it flagged that don't matter for your deal
 3. **Other concerns or comments?** — free text
 4. **Rate this analysis (1-5)** — quick overall rating
 
-Type `skip` at the first prompt to skip the entire feedback flow. Press Enter to skip any individual question.
+Type `skip` to skip the entire feedback flow. Press Enter to skip individual questions.
 
-### Where it's saved
+**From the HTML report** — click the thumbs up/down buttons on individual findings as you read, then click **Save Feedback** to copy a CLI command. Paste it in your terminal.
 
-All feedback is stored locally at `~/.legalos/feedback.json`. It stays on your machine and is never uploaded anywhere.
+### What it does with your feedback
 
-### How it improves future analyses
+- **Missed items** get extra attention in future analyses
+- **Over-flagged items** get de-emphasized unless truly unusual
+- Patterns accumulate across sessions — the tool continuously sharpens to your deal context
 
-LegalOS reads your past feedback before every analysis. Under the hood, it aggregates your feedback into patterns and injects them into the analysis prompt:
-
-- **Items you said were missed** get extra attention — the AI is explicitly told to look harder for these.
-- **Items you said weren't relevant** get de-emphasized — the AI reduces flagging unless the clause is truly unusual.
-- Over several sessions, the tool adapts to what matters for your deals.
-
-### The feedback loop in action
-
-When LegalOS catches something you previously said it missed, you'll see:
-
-```
-Feedback loop working:
-  ✓ Previously missed 'Full ratchet anti-dilution' — now caught!
-```
-
-### Feedback from the HTML report
-
-The HTML report has **thumbs up/down buttons** on every finding:
-
-1. Click 👍 **Helpful** or 👎 **Not relevant** on individual findings as you read through the report
-2. A floating bar at the bottom shows how many findings you've rated and a **Save Feedback** button
-3. Click **Save Feedback** — it copies a CLI command to your clipboard
-4. Paste and run it in your terminal to save the feedback
+All feedback is stored locally at `~/.legalos/feedback.json`. Nothing is uploaded anywhere.
 
 ### Quick reference
 
