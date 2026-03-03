@@ -61,6 +61,17 @@ All questions are optional — press Enter to skip any of them.
 
 ---
 
+## See It In Action
+
+Want to know what a LegalOS report looks like before running your own analysis?
+
+1. **Open the sample report** — open `examples/sample_report.html` in your browser. No API key needed. This is a real analysis of a Series A term sheet.
+2. **Or generate one yourself** — run `legalos analyze examples/` to analyze the sample term sheet and produce a fresh report.
+
+Check `examples/README.md` for what to look for in the report.
+
+---
+
 ## Analyzing a Document
 
 ### The simple way
@@ -186,11 +197,62 @@ legalos kb
 legalos kb search "anti-dilution"
 ```
 
-**Give feedback** — tell it what it missed or over-flagged, and future analyses improve:
+---
+
+## Feedback — How LegalOS Learns
+
+LegalOS gets better the more you use it. After every analysis, it asks for quick feedback and uses that to improve future runs.
+
+### What happens after analysis
+
+Once the report opens, you'll see 4 prompts in the terminal:
+
+1. **Did LegalOS miss anything important?** — comma-separated list of things it should have caught (e.g. "Full ratchet anti-dilution, Founder vesting acceleration")
+2. **Any findings that were NOT relevant?** — things it flagged that don't matter for your deal
+3. **Other concerns or comments?** — free text
+4. **Rate this analysis (1-5)** — quick overall rating
+
+Type `skip` at the first prompt to skip the entire feedback flow. Press Enter to skip any individual question.
+
+### Where it's saved
+
+All feedback is stored locally at `~/.legalos/feedback.json`. It stays on your machine and is never uploaded anywhere.
+
+### How it improves future analyses
+
+LegalOS reads your past feedback before every analysis. Under the hood, it aggregates your feedback into patterns and injects them into the analysis prompt:
+
+- **Items you said were missed** get extra attention — the AI is explicitly told to look harder for these.
+- **Items you said weren't relevant** get de-emphasized — the AI reduces flagging unless the clause is truly unusual.
+- Over several sessions, the tool adapts to what matters for your deals.
+
+### The feedback loop in action
+
+When LegalOS catches something you previously said it missed, you'll see:
 
 ```
-legalos feedback
+Feedback loop working:
+  ✓ Previously missed 'Full ratchet anti-dilution' — now caught!
 ```
+
+### Feedback from the HTML report
+
+The HTML report has **thumbs up/down buttons** on every finding:
+
+1. Click 👍 **Helpful** or 👎 **Not relevant** on individual findings as you read through the report
+2. A floating bar at the bottom shows how many findings you've rated and a **Save Feedback** button
+3. Click **Save Feedback** — it copies a CLI command to your clipboard
+4. Paste and run it in your terminal to save the feedback
+
+### Quick reference
+
+| Command | What It Does |
+|---------|-------------|
+| `legalos feedback` | View feedback summary — average rating, frequently missed items, over-flagged items |
+| `legalos feedback import file.feedback.json` | Import per-finding feedback from an HTML report export |
+| `legalos feedback submit --up "Finding 1" --down "Finding 2" --doc "doc.pdf"` | Submit feedback directly via CLI |
+| `legalos feedback clear` | Delete all collected feedback |
+| `legalos analyze doc.pdf --no-feedback` | Run analysis without post-analysis feedback prompts |
 
 ---
 

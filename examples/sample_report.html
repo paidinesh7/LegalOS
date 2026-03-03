@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalOS Analysis — NexaFlow_Series_A_TermSheet.docx</title>
+    <style>/* LegalOS Report — Professional Legal Aesthetic */
+
+:root {
+    --bg: #fafaf9;
+    --card-bg: #ffffff;
+    --text: #1c1917;
+    --text-muted: #78716c;
+    --border: #e7e5e4;
+    --accent: #1e40af;
+    --accent-light: #dbeafe;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --yellow: #ca8a04;
+    --yellow-bg: #fefce8;
+    --orange: #ea580c;
+    --orange-bg: #fff7ed;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --sidebar-w: 280px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.sidebar .subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 8px 12px;
+    margin-bottom: 2px;
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.15s;
+}
+
+.sidebar nav a:hover { background: var(--accent-light); }
+.sidebar nav a.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+
+.risk-legend {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.risk-legend h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-w);
+    padding: 32px 48px;
+    max-width: 960px;
+}
+
+.doc-header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+
+.doc-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.doc-header .doc-type {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Sections */
+.section {
+    margin-bottom: 48px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.section-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.risk-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.risk-low    { background: var(--green-bg);  color: var(--green);  }
+.risk-medium { background: var(--yellow-bg); color: var(--yellow); }
+.risk-high   { background: var(--orange-bg); color: var(--orange); }
+.risk-critical { background: var(--red-bg); color: var(--red); }
+
+.section-summary {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.7;
+}
+
+/* Findings table */
+.findings {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.finding {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    border-left: 4px solid var(--border);
+}
+
+.finding.severity-standard  { border-left-color: var(--green);  }
+.finding.severity-aggressive { border-left-color: var(--orange); }
+.finding.severity-unusual    { border-left-color: var(--red);    }
+.finding.severity-missing    { border-left-color: var(--purple); }
+
+.finding-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.finding-title {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.finding-clause {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.severity-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.tag-standard   { background: var(--green-bg);  color: var(--green);  }
+.tag-aggressive { background: var(--orange-bg); color: var(--orange); }
+.tag-unusual    { background: var(--red-bg);    color: var(--red);    }
+.tag-missing    { background: var(--purple-bg); color: var(--purple); }
+
+.finding-quote {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-left: 3px solid var(--border);
+    padding-left: 12px;
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.finding-body p {
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.finding-body strong {
+    color: var(--text);
+}
+
+/* Impact Dashboard */
+.impact-dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.score-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.score-card h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.score-value {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.score-low    { color: var(--green);  }
+.score-medium { color: var(--yellow); }
+.score-high   { color: var(--orange); }
+.score-critical { color: var(--red); }
+
+.score-rationale {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Waterfall table */
+.waterfall-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.waterfall-table th {
+    background: var(--bg);
+    padding: 10px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid var(--border);
+}
+
+.waterfall-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Negotiation Items */
+.negotiation-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+}
+
+.negotiation-item h4 {
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.negotiation-item p {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.priority-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+/* Explainer cards */
+.term-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.term-card summary {
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.term-card summary::before {
+    content: '▸ ';
+    color: var(--text-muted);
+}
+
+.term-card[open] summary::before {
+    content: '▾ ';
+}
+
+.term-card-body {
+    padding: 0 20px 16px;
+    font-size: 14px;
+}
+
+.term-card-body p {
+    margin-bottom: 8px;
+}
+
+/* Print styles */
+@media print {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 16px; }
+    .section { page-break-inside: avoid; }
+    .finding { break-inside: avoid; }
+    body { font-size: 12px; }
+}
+</style>
+    <style>
+        /* Per-finding feedback buttons */
+        .finding-feedback { display: flex; gap: 6px; margin-top: 8px; }
+        .vote-btn {
+            border: 1px solid #d1d5db; background: #fff; border-radius: 6px;
+            padding: 4px 10px; cursor: pointer; font-size: 13px; transition: all 0.15s;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .vote-btn:hover { background: #f3f4f6; }
+        .vote-btn.voted-up { background: #dcfce7; border-color: #86efac; color: #166534; }
+        .vote-btn.voted-down { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+        /* Floating feedback bar */
+        .feedback-bar {
+            position: fixed; bottom: 0; left: 260px; right: 0;
+            background: #fff; border-top: 1px solid #e5e7eb;
+            padding: 10px 24px; display: flex; align-items: center;
+            justify-content: space-between; z-index: 100;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+        .feedback-bar .counter { font-size: 13px; color: #6b7280; }
+        .feedback-bar .export-btn {
+            background: #4f46e5; color: #fff; border: none; border-radius: 6px;
+            padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 500;
+        }
+        .feedback-bar .export-btn:hover { background: #4338ca; }
+        .feedback-bar .export-btn:disabled { background: #9ca3af; cursor: default; }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h1>LegalOS</h1>
+    <p class="subtitle">Legal Document Analyzer</p>
+    <nav>
+        
+        <a href="#control_provisions">Control Provisions</a>
+        
+        <a href="#capital_structure">Capital Structure</a>
+        
+        <a href="#investor_rights">Investor Rights</a>
+        
+        <a href="#key_events_exit">Key Events &amp; Exit</a>
+        
+        <a href="#founder_obligations">Founder Obligations</a>
+        
+        <a href="#financial_terms">Financial Terms</a>
+        
+        
+        <a href="#impact">Impact Assessment</a>
+        
+        
+        <a href="#explainer">Plain English Guide</a>
+        
+        
+        
+    </nav>
+    <div class="risk-legend">
+        <h3>Severity Legend</h3>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Standard</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Aggressive</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span> Unusual</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span> Missing</div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main" style="padding-bottom: 60px;">
+    <div class="doc-header">
+        <h1>NexaFlow_Series_A_TermSheet.docx</h1>
+        <p class="doc-type">term_sheet</p>
+        
+    </div>
+
+    <!-- Analysis Sections -->
+    
+    <div class="section" id="control_provisions">
+        <div class="section-header">
+            <h2>Control Provisions</h2>
+            <span class="risk-badge risk-critical">critical</span>
+        </div>
+        <p class="section-summary">Investors hold effective veto over all material decisions; founders retain only 2 of 5 board seats with quorum requiring investor presence.</p>
+
+        <div class="findings">
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="control_provisions"
+                 data-finding-index="0"
+                 data-finding-title="Investor Control via Board Structure and Quorum">
+                <div class="finding-header">
+                    <span class="finding-title">Investor Control via Board Structure and Quorum</span>
+                    <span class="finding-clause">4.1, 4.3, 4.4</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">Board shall consist of five directors... Quorum three directors, must include at least one Investor Director... Chairman nominated by Lead Investor, casting vote</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Investors control 2 of 5 seats plus chairman with casting vote. Quorum requires investor presence, giving them effective veto on all board decisions.</p>
+                    <p><strong>Founder Impact:</strong> Founders&#39; 2 seats are structurally minority. Cannot hold board meeting or pass resolution without investor director approval. Chairman casting vote breaks all deadlocks in investor favor.</p>
+                    <p><strong>Recommendation:</strong> Negotiate board to 4 seats (2 founder, 1 investor, 1 independent) with quorum of 2 or require supermajority (3 votes) to eliminate casting vote advantage.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="control_provisions"
+                 data-finding-index="1"
+                 data-finding-title="Sweeping Protective Provisions Covering Operational Decisions">
+                <div class="finding-header">
+                    <span class="finding-title">Sweeping Protective Provisions Covering Operational Decisions</span>
+                    <span class="finding-clause">5.1(a) through 5.1(n)</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">Protective Provisions requiring Lead Investor consent: amendments to Articles, new securities, dividends, borrowing &gt;50L, M&amp;A, related party, C-suite hiring, budget &gt;25L, litigation &gt;10L, founder compensation, subsidiaries, winding up</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> 13 categories of veto rights extend beyond capital structure to day-to-day operations (budget &gt;25L, C-suite hiring, founder compensation). No sunset clause or thresholds that naturally reduce over time.</p>
+                    <p><strong>Founder Impact:</strong> Founders cannot hire key personnel, approve budgets, give themselves raises, or settle routine litigation without investor approval. Operational paralysis risk if investors disagree on strategy.</p>
+                    <p><strong>Recommendation:</strong> Carve out C-suite hiring from veto once leadership team reaches defined size. Sunset protective provisions after Series B or 3 years. Raise budget threshold to 50-100L for operational flexibility.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="section" id="capital_structure">
+        <div class="section-header">
+            <h2>Capital Structure</h2>
+            <span class="risk-badge risk-critical">critical</span>
+        </div>
+        <p class="section-summary">Pre-money ESOP pool and full-ratchet anti-dilution create severe founder dilution; pay-to-play clause enforces investor participation.</p>
+
+        <div class="findings">
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="capital_structure"
+                 data-finding-index="0"
+                 data-finding-title="Pre-Money ESOP Pool 100% Founder Dilution">
+                <div class="finding-header">
+                    <span class="finding-title">Pre-Money ESOP Pool 100% Founder Dilution</span>
+                    <span class="finding-clause">3.1</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">ESOP Pool...to 12% of the fully diluted share capital, to be created entirely from the Founders&#39; shareholding</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Entire 12% ESOP pool carved from founder equity, not investor shares. Founders absorb full dilution before investors contribute.</p>
+                    <p><strong>Founder Impact:</strong> Arjun diluted from 42% to ~37%; Priya from 38% to ~33.6% post-ESOP creation alone.</p>
+                    <p><strong>Recommendation:</strong> Negotiate 50% ESOP expansion from investor shares (post-money pool) or reduce pool size to 8-10% from founder equity only.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="capital_structure"
+                 data-finding-index="1"
+                 data-finding-title="Full-Ratchet Anti-Dilution (Aggressive Standard)">
+                <div class="finding-header">
+                    <span class="finding-title">Full-Ratchet Anti-Dilution (Aggressive Standard)</span>
+                    <span class="finding-clause">6.1</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">Full Ratchet: conversion price adjusted downward to price per share in such Down Round, regardless of number of shares issued</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Any future down-round triggers full price adjustment for all investor shares, multiplying dilution to founders. Weighted-average is market standard.</p>
+                    <p><strong>Founder Impact:</strong> In down-round at 50% of Series A price, investor ownership expands dramatically; founders face severe secondary dilution.</p>
+                    <p><strong>Recommendation:</strong> Push for weighted-average narrow-based anti-dilution with carve-out for ESOP grants below 1% pool and future Series rounds.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="section" id="investor_rights">
+        <div class="section-header">
+            <h2>Investor Rights</h2>
+            <span class="risk-badge risk-critical">critical</span>
+        </div>
+        <p class="section-summary">Investors hold extensive veto rights, drag-along without valuation floor, and ROFR on all founder transfers post-lockup with no exceptions for founder inter-se trades.</p>
+
+        <div class="findings">
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="investor_rights"
+                 data-finding-index="0"
+                 data-finding-title="Drag-Along Valuation Floor Insufficient">
+                <div class="finding-header">
+                    <span class="finding-title">Drag-Along Valuation Floor Insufficient</span>
+                    <span class="finding-clause">8.4 Drag-Along Right</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">drag-along right shall not apply to any transaction that values the Company at less than 3x the post-money valuation</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> 3x post-money (INR 480 Cr) is only 4x Series A investment. Founders forced to sell at minimal returns if majority approves.</p>
+                    <p><strong>Founder Impact:</strong> Founders can be dragged into sale at INR 480 Cr valuation, locking in mediocre 4x return on Series A capital despite larger ownership stake.</p>
+                    <p><strong>Recommendation:</strong> Negotiate drag-along floor to minimum 5-6x post-money or 10x Series A investment. Require qualified third-party valuation above threshold.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="investor_rights"
+                 data-finding-index="1"
+                 data-finding-title="ROFR on All Founder Transfers Post-Lockup">
+                <div class="finding-header">
+                    <span class="finding-title">ROFR on All Founder Transfers Post-Lockup</span>
+                    <span class="finding-clause">8.2 Right of First Refusal</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">proposed transfer by the Founders shall be subject to a right of first refusal in favor of the Investors</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> ROFR applies to every founder share transfer after 4-year lockup, even small gifts or family transfers. Creates operational friction and liquidity constraints.</p>
+                    <p><strong>Founder Impact:</strong> Founders cannot freely transfer even 0.1% of shares to family without 30-day investor matching window. Restricts estate planning, gifting, secondaries.</p>
+                    <p><strong>Recommendation:</strong> Carve out exceptions: transfers to family/trusts below 2% threshold, employee share purchases, estate planning. Cap ROFR at transfers above 5% threshold.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="section" id="key_events_exit">
+        <div class="section-header">
+            <h2>Key Events &amp; Exit</h2>
+            <span class="risk-badge risk-high">high</span>
+        </div>
+        <p class="section-summary">Participating preferred with 1.5x multiple and broad deemed liquidation triggers including founder dilution threshold.</p>
+
+        <div class="findings">
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="key_events_exit"
+                 data-finding-index="0"
+                 data-finding-title="Participating Preferred with 1.5x Multiple">
+                <div class="finding-header">
+                    <span class="finding-title">Participating Preferred with 1.5x Multiple</span>
+                    <span class="finding-clause">7.1, 7.2, 7.3</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">1.5x the original investment amount...participate pro-rata...as-converted basis (participating preferred)</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Investors get 1.5x return before founders share remaining proceeds. This is above market standard of 1x non-participating.</p>
+                    <p><strong>Founder Impact:</strong> Founders&#39; exit proceeds significantly reduced in modest exits. At 4x exit, investors capture disproportionate upside.</p>
+                    <p><strong>Recommendation:</strong> Negotiate down to 1x non-participating or capped participation at 1x original investment amount only.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="key_events_exit"
+                 data-finding-index="1"
+                 data-finding-title="Founder Dilution as Deemed Liquidation Event">
+                <div class="finding-header">
+                    <span class="finding-title">Founder Dilution as Deemed Liquidation Event</span>
+                    <span class="finding-clause">7.3(d)</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">transaction resulting in Founders collectively holding less than 25% of voting power</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Normal dilution from future fundraising rounds automatically triggers 1.5x liquidation preference payout unless waived by lead investor.</p>
+                    <p><strong>Founder Impact:</strong> Founders forced to liquidate if holding drops below 25% from any dilution. Series B/C raises could trigger premature exit.</p>
+                    <p><strong>Recommendation:</strong> Narrow trigger to only change-of-control transactions. Exclude dilution from normal equity raises or set threshold at 10%.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="section" id="founder_obligations">
+        <div class="section-header">
+            <h2>Founder Obligations</h2>
+            <span class="risk-badge risk-critical">critical</span>
+        </div>
+        <p class="section-summary">Aggressive multi-year restrictions on founder mobility with punitive vesting cliff and broad non-compete that may be unenforceable in India.</p>
+
+        <div class="findings">
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="founder_obligations"
+                 data-finding-index="0"
+                 data-finding-title="Three-Year Post-Employment Non-Compete">
+                <div class="finding-header">
+                    <span class="finding-title">Three-Year Post-Employment Non-Compete</span>
+                    <span class="finding-clause">9.2</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">three (3) years following termination for any reason, each Founder shall not, directly or indirectly, engage in any business that competes</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Post-employment non-compete extends 3 years after founder leaves, covering India and Southeast Asia. Section 27 Indian Contract Act restricts post-employment restraints to protect livelihood.</p>
+                    <p><strong>Founder Impact:</strong> Founder cannot work in competitive space for 3 years post-exit, regardless of termination reason. Legally questionable enforceability but creates litigation risk.</p>
+                    <p><strong>Recommendation:</strong> Negotiate down to 12-18 months post-exit, narrow to India only, and add carveout for non-core services. Ensure non-compete only applies if terminated for cause.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="founder_obligations"
+                 data-finding-index="1"
+                 data-finding-title="Four-Year Vesting with Asymmetric Termination Treatment">
+                <div class="finding-header">
+                    <span class="finding-title">Four-Year Vesting with Asymmetric Termination Treatment</span>
+                    <span class="finding-clause">9.4</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">Each Founder&#39;s shares shall be subject to reverse vesting over a period of four (4) years, with a one (1) year cliff. Upon termination for cause, all unvested shares shall be forfeited. Upon termination without cause or constructive termination, 50% of unvested shares shall immediately vest.</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Founder shares vest over 4 years with 1-year cliff. If terminated for cause, founder loses all unvested shares. If terminated without cause, only 50% of unvested vest—no full acceleration.</p>
+                    <p><strong>Founder Impact:</strong> If founder is terminated without cause at year 2, loses 75% of unvested equity (only 50% acceleration, not full). Creates misalignment: founder takes massive dilution risk.</p>
+                    <p><strong>Recommendation:</strong> Push for 100% acceleration of unvested shares on termination without cause or change of control. Narrow definition of &#39;cause&#39; to exclude performance-based triggers. Add 90-day cure period.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="section" id="financial_terms">
+        <div class="section-header">
+            <h2>Financial Terms</h2>
+            <span class="risk-badge risk-medium">medium</span>
+        </div>
+        <p class="section-summary">Valuation reasonably structured; ESOP pool carved from founders&#39; shares increases dilution significantly. Use-of-proceeds restrictions limit operational flexibility.</p>
+
+        <div class="findings">
+            
+            <div class="finding severity-aggressive"
+                 data-section-id="financial_terms"
+                 data-finding-index="0"
+                 data-finding-title="ESOP Pool Carved From Founder Equity">
+                <div class="finding-header">
+                    <span class="finding-title">ESOP Pool Carved From Founder Equity</span>
+                    <span class="finding-clause">2.2, 2.3, 3.1</span>
+                </div>
+                <span class="severity-tag tag-aggressive">aggressive</span>
+                
+                <div class="finding-quote">pre-money valuation INR 120 Crores; ESOP Pool 12% from Founders&#39; shareholding</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> 12% ESOP pool created entirely from founder shares before investor entry. This increases founder dilution beyond stated 25% investor stake.</p>
+                    <p><strong>Founder Impact:</strong> Founders lose 12% of equity to create employee pool. Real founder ownership post-investment is ~53% (80 Cr ÷ 160 Cr post-money), not 75%.</p>
+                    <p><strong>Recommendation:</strong> Request investor contribute 3-4% toward ESOP pool, or negotiate pool creation after investment. Alternatively, negotiate lower ESOP pool percentage (8-10% is market-standard for Series A).</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+            <div class="finding severity-unusual"
+                 data-section-id="financial_terms"
+                 data-finding-index="1"
+                 data-finding-title="Use-of-Proceeds Approval Gate">
+                <div class="finding-header">
+                    <span class="finding-title">Use-of-Proceeds Approval Gate</span>
+                    <span class="finding-clause">2.5</span>
+                </div>
+                <span class="severity-tag tag-unusual">unusual</span>
+                
+                <div class="finding-quote">Any deviation exceeding 15% from allocation requires prior written consent of Lead Investor.</div>
+                
+                <div class="finding-body">
+                    <p><strong>Explanation:</strong> Investor approval required if founder reallocates use-of-proceeds by more than 15%. Restricts founder agility to respond to market changes or operational needs.</p>
+                    <p><strong>Founder Impact:</strong> Cannot shift capital to critical areas (e.g., sales vs. engineering) without investor permission. 15% threshold is tight—creates operational friction.</p>
+                    <p><strong>Recommendation:</strong> Negotiate threshold to 25-30% or require approval only for category shifts exceeding 50%. Alternatively, tie approvals to board meeting frequency, not written consent.</p>
+                </div>
+                <div class="finding-feedback">
+                    <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
+                    <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <!-- Impact Assessment -->
+    
+    <div class="section" id="impact">
+        <div class="section-header">
+            <h2>Impact Assessment</h2>
+        </div>
+
+        <div class="impact-dashboard">
+            
+            
+            <div class="score-card">
+                <h3>Control</h3>
+                <div class="score-value score-critical">
+                    8/10
+                </div>
+                <p class="score-rationale">Investors hold 2 Board seats, veto &gt;13 material actions, control Chairman with casting vote.</p>
+            </div>
+            
+            <div class="score-card">
+                <h3>Economics</h3>
+                <div class="score-value score-critical">
+                    8/10
+                </div>
+                <p class="score-rationale">1.5x liquidation preference + participation, full ratchet anti-dilution, 4-year founder lock-in punitive.</p>
+            </div>
+            
+            <div class="score-card">
+                <h3>Flexibility</h3>
+                <div class="score-value score-critical">
+                    9/10
+                </div>
+                <p class="score-rationale">100% time commitment, 3-year non-compete, 4-year reverse vesting cliff, 13 veto rights, 90-day exclusivity.</p>
+            </div>
+            
+        </div>
+
+        
+        <h3 style="margin-bottom: 12px;">Exit Waterfall</h3>
+        <table class="waterfall-table">
+            <thead>
+                <tr>
+                    <th>Exit Multiple</th>
+                    <th>Valuation</th>
+                    <th>Investor Gets</th>
+                    <th>Founder Gets</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                    <td><strong>2x</strong></td>
+                    <td>INR 320 Cr (INR 160 Cr post-money × 2)</td>
+                    <td>INR 60 Cr (1.5x × INR 40 Cr preference + pro-rata on INR 160 Cr remaining)</td>
+                    <td>INR 180 Cr (founders 67.5% remaining post-preference, fully diluted basis)</td>
+                    <td>Founders net ~56% of exit value despite 75% pre-investment ownership.</td>
+                </tr>
+                
+                <tr>
+                    <td><strong>5x</strong></td>
+                    <td>INR 800 Cr (INR 160 Cr post-money × 5)</td>
+                    <td>INR 100 Cr (1.5x × INR 40 Cr + pro-rata 25% of INR 640 Cr remainder)</td>
+                    <td>INR 480 Cr (67.5% of INR 710 Cr remainder post-preference)</td>
+                    <td>Investors capture 16.8% dilution premium from participation clause.</td>
+                </tr>
+                
+                <tr>
+                    <td><strong>10x</strong></td>
+                    <td>INR 1,600 Cr (INR 160 Cr post-money × 10)</td>
+                    <td>INR 140 Cr (1.5x × INR 40 Cr + pro-rata 25% of INR 1,460 Cr remainder)</td>
+                    <td>INR 985 Cr (67.5% of INR 1,460 Cr remainder post-preference)</td>
+                    <td>At 10x, participation becomes 8.75% swing; founders still retain 61.6% upside.</td>
+                </tr>
+                
+            </tbody>
+        </table>
+        
+
+        
+        <h3 style="margin-bottom: 12px;">Top Negotiation Priorities</h3>
+        
+        <div class="negotiation-item">
+            <h4><span class="priority-badge">#1</span>Full Ratchet Anti-Dilution Protection</h4>
+            <p><strong>Current:</strong> Clause 6.1: Full ratchet adjustment on any down round, regardless of share count.</p>
+            <p><strong>Suggested:</strong> Replace full ratchet with weighted-average anti-dilution (broad-based, standard market term).</p>
+            <p><strong>Why:</strong> Full ratchet is punitive; weighted-average is 25% less dilutive to founders in down rounds.</p>
+        </div>
+        
+        <div class="negotiation-item">
+            <h4><span class="priority-badge">#2</span>Liquidation Preference Cap &amp; Participation</h4>
+            <p><strong>Current:</strong> Clause 7.1-7.2: 1.5x preference + full pro-rata participation on as-converted basis.</p>
+            <p><strong>Suggested:</strong> Reduce to 1.0x non-participating preference (founders get upside above preference only).</p>
+            <p><strong>Why:</strong> 1.5x + participation double-dips; 1.0x non-participating aligns investor/founder incentives on growth.</p>
+        </div>
+        
+        <div class="negotiation-item">
+            <h4><span class="priority-badge">#3</span>Founder Lock-in &amp; Reverse Vesting</h4>
+            <p><strong>Current:</strong> Clause 8.1 &amp; 9.4: 4-year lock-in, 4-year reverse vesting with 1-year cliff, 50% penalty for without-cause termination.</p>
+            <p><strong>Suggested:</strong> Reduce lock-in to 2 years, vesting to 3 years, carve-out for equity stakes above 20%.</p>
+            <p><strong>Why:</strong> 4+4</p>
+        </div>
+        
+        
+    </div>
+    
+
+    <!-- Plain English Guide -->
+    
+    <div class="section" id="explainer">
+        <div class="section-header">
+            <h2>Plain English Guide</h2>
+        </div>
+        <p class="section-summary">Key legal terms from this document explained in plain English.</p>
+
+        
+        <details class="term-card">
+            <summary>Liquidation Preference (1.5x Participating)</summary>
+            <div class="term-card-body">
+                <p><strong>What it means:</strong> Investors get 1.5x their money back first, then share remaining proceeds with founders.</p>
+                <p><strong>Real-world example:</strong> Company sells for INR 200 Cr; investors get INR 60 Cr (1.5x their INR 40 Cr) before founders receive anything.</p>
+                <p><strong>Why it matters:</strong> Founders may get zero even after successful exit if exit valuation is low relative to investment.</p>
+            </div>
+        </details>
+        
+        <details class="term-card">
+            <summary>Protective Provisions (Veto Rights)</summary>
+            <div class="term-card-body">
+                <p><strong>What it means:</strong> Investors can block major decisions like hiring C-suite, changing business, borrowing money, or paying dividends.</p>
+                <p><strong>Real-world example:</strong> Founder wants to hire new CTO but investor director says no; founder cannot proceed without investor consent.</p>
+                <p><strong>Why it matters:</strong> Founders lose day-to-day control of critical business decisions after accepting this funding.</p>
+            </div>
+        </details>
+        
+        <details class="term-card">
+            <summary>Full Ratchet Anti-Dilution</summary>
+            <div class="term-card-body">
+                <p><strong>What it means:</strong> If company raises next round at lower price, investor&#39;s conversion price drops to match, diluting founders more.</p>
+                <p><strong>Real-world example:</strong> Series A at INR 4,800/share; Series B at INR 2,000/share; investor&#39;s price resets to INR 2,000, founders lose 58% value.</p>
+                <p><strong>Why it matters:</strong> Down round punishes founders severely; founder equity shrinks even though founders didn&#39;t sell shares.</p>
+            </div>
+        </details>
+        
+        <details class="term-card">
+            <summary>Founder Reverse Vesting (4-year cliff)</summary>
+            <div class="term-card-body">
+                <p><strong>What it means:</strong> Founder must stay 4 years to keep all shares; leaving early forfeits unvested shares to company.</p>
+                <p><strong>Real-world example:</strong> Founder leaves after 2.5 years; loses 62.5% of equity despite building the company pre-funding.</p>
+                <p><strong>Why it matters:</strong> Founders become employees of their own company with forfeiture risk; creates golden handcuffs.</p>
+            </div>
+        </details>
+        
+        <details class="term-card">
+            <summary>Deemed Liquidation (founder control threshold)</summary>
+            <div class="term-card-body">
+                <p><strong>What it means:</strong> Sale, merger, or any deal where founders drop below 25% voting power triggers investor liquidation pref.</p>
+                <p><strong>Real-world example:</strong> Strategic acquirer buys 30% stake, diluting founders to 24.5% voting; triggers 1.5x pref payoff despite no sale.</p>
+                <p><strong>Why it matters:</strong> Founders cannot do minority transactions or secondary sales without triggering investor payout obligations.</p>
+            </div>
+        </details>
+        
+    </div>
+    
+
+    <!-- Learning from Feedback -->
+    
+
+    <!-- Knowledge Applied -->
+    
+
+    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
+        Generated by LegalOS. This analysis is AI-generated and should not be treated as legal advice. Always consult with a qualified lawyer.
+    </div>
+</div>
+
+<!-- Floating feedback bar -->
+<div class="feedback-bar" id="feedbackBar" style="display: none;">
+    <span class="counter" id="voteCounter">0 findings rated</span>
+    <button class="export-btn" onclick="exportFeedback()">Export Feedback JSON</button>
+</div>
+
+<script>
+(function() {
+    var votes = {};
+    var totalVotes = 0;
+    var docName = "NexaFlow_Series_A_TermSheet.docx";
+
+    window.vote = function(btn) {
+        var card = btn.closest('.finding');
+        var sectionId = card.dataset.sectionId;
+        var findingIndex = parseInt(card.dataset.findingIndex, 10);
+        var findingTitle = card.dataset.findingTitle;
+        var voteType = btn.dataset.vote;
+        var key = sectionId + ':' + findingIndex;
+
+        // Toggle off if already voted same way
+        var buttons = card.querySelectorAll('.vote-btn');
+        var wasActive = btn.classList.contains('voted-' + voteType);
+
+        buttons.forEach(function(b) {
+            b.classList.remove('voted-up', 'voted-down');
+        });
+
+        if (wasActive) {
+            delete votes[key];
+        } else {
+            btn.classList.add('voted-' + voteType);
+            votes[key] = {
+                section_id: sectionId,
+                finding_index: findingIndex,
+                finding_title: findingTitle,
+                vote: voteType
+            };
+        }
+
+        totalVotes = Object.keys(votes).length;
+        var bar = document.getElementById('feedbackBar');
+        var counter = document.getElementById('voteCounter');
+        if (totalVotes > 0) {
+            bar.style.display = 'flex';
+            counter.textContent = totalVotes + ' finding' + (totalVotes === 1 ? '' : 's') + ' rated';
+        } else {
+            bar.style.display = 'none';
+        }
+    };
+
+    window.exportFeedback = function() {
+        var payload = {
+            document_name: docName,
+            timestamp: new Date().toISOString(),
+            votes: Object.values(votes)
+        };
+        var json = JSON.stringify(payload, null, 2);
+        var blob = new Blob([json], {type: 'application/json'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'legalos_feedback_' + docName.replace(/[^a-zA-Z0-9]/g, '_') + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+})();
+</script>
+
+</body>
+</html>

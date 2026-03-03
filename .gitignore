@@ -13,6 +13,7 @@ venv/
 .pytest_cache/
 *.html
 !src/legalos/report/templates/report.html
+!examples/sample_report.html
 output/
 .legalos/
 documents/*
