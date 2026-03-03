@@ -53,7 +53,7 @@ def auto_capture_learnings(
             tags = _extract_tags(finding.title)
             _add(LearningEntry(
                 title=finding.title,
-                insight=f"{finding.explanation} ({finding.severity.value})",
+                insight=f"{finding.why_it_matters} ({finding.severity.value})",
                 category=LearningCategory.CLAUSE_PATTERN,
                 source=LearningSource.AUTO_ANALYSIS,
                 tags=tags,

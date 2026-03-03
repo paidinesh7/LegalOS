@@ -10,6 +10,8 @@ from legalos.analysis.prompts.financial_terms import FINANCIAL_TERMS_PROMPT
 from legalos.analysis.prompts.explainer import EXPLAINER_PROMPT
 from legalos.analysis.prompts.impact import IMPACT_PROMPT
 from legalos.analysis.prompts.redline import REDLINE_PROMPT
+from legalos.analysis.prompts.executive_summary import EXECUTIVE_SUMMARY_PROMPT
+from legalos.analysis.prompts.quick_scan import build_quick_scan_prompt
 
 SECTION_PROMPTS = [
     ("control_provisions", "Control Provisions", CONTROL_PROMPT),
@@ -26,4 +28,6 @@ __all__ = [
     "EXPLAINER_PROMPT",
     "IMPACT_PROMPT",
     "REDLINE_PROMPT",
+    "EXECUTIVE_SUMMARY_PROMPT",
+    "build_quick_scan_prompt",
 ]

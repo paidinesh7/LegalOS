@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class Severity(str, Enum):
@@ -19,12 +19,38 @@ class Finding(BaseModel):
     """A single finding from document analysis."""
 
     clause_reference: str = Field(description="Clause number or section reference")
-    quoted_text: str = Field(description="Exact text from the document")
+    quoted_text: str = Field(default="", description="Source text for reference")
     title: str = Field(description="Short title for the finding")
-    severity: Severity = Field(description="How concerning this clause is for founders")
-    explanation: str = Field(description="Plain English explanation of what this means")
-    founder_impact: str = Field(description="Specific impact on the founder's position")
-    recommendation: str = Field(description="What the founder should negotiate or watch for")
+    severity: Severity = Field(default=Severity.UNUSUAL, description="How concerning this clause is for founders")
+    why_it_matters: str = Field(default="", description="What this means and how it affects the founder")
+    action: str = Field(default="", description="What to negotiate or do about it")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _migrate_old_fields(cls, values: object) -> object:
+        """Backward compat: merge old field names into new ones."""
+        if isinstance(values, dict):
+            if "explanation" in values and "why_it_matters" not in values:
+                values["why_it_matters"] = f"{values.pop('explanation', '')} {values.pop('founder_impact', '')}".strip()
+            elif "explanation" in values:
+                values.pop("explanation", None)
+                values.pop("founder_impact", None)
+            if "recommendation" in values and "action" not in values:
+                values["action"] = values.pop("recommendation", "")
+            elif "recommendation" in values:
+                values.pop("recommendation", None)
+        return values
+
+    @field_validator("severity", mode="before")
+    @classmethod
+    def _coerce_severity(cls, v: object) -> str:
+        """Accept partial/unknown severity strings from truncated JSON."""
+        if isinstance(v, str):
+            v_lower = v.strip().lower()
+            for member in Severity:
+                if v_lower.startswith(member.value[:3]):
+                    return member.value
+        return "unusual"  # Safe fallback
 
 
 class AnalysisSection(BaseModel):
@@ -115,11 +141,54 @@ class RedlineOutput(BaseModel):
     comments: list[RedlineComment] = Field(default_factory=list)
 
 
+class ExecutiveSummary(BaseModel):
+    """Top-level summary for quick founder decision-making."""
+
+    overall_risk: str = Field(description="low / medium / high / critical")
+    bottom_line: str = Field(description="One paragraph: what kind of deal, biggest concern, recommendation")
+    must_negotiate: list[str] = Field(default_factory=list, description="Top 3 action items")
+
+
+class RedFlag(BaseModel):
+    """A red flag from quick scan."""
+
+    clause_reference: str = Field(description="Clause number")
+    title: str = Field(description="Short title")
+    severity: Severity = Field(default=Severity.UNUSUAL)
+    what_it_says: str = Field(default="", description="1-sentence clause summary")
+    why_its_a_problem: str = Field(default="", description="Why this concerns the founder")
+    pushback: str = Field(default="", description="Specific counter-argument or negotiation angle")
+
+    @field_validator("severity", mode="before")
+    @classmethod
+    def _coerce_severity(cls, v: object) -> str:
+        """Accept partial/unknown severity strings from truncated JSON."""
+        if isinstance(v, str):
+            v_lower = v.strip().lower()
+            for member in Severity:
+                if v_lower.startswith(member.value[:3]):
+                    return member.value
+        return "unusual"  # Safe fallback
+
+
+class QuickScanOutput(BaseModel):
+    """Output from quick scan (1-2 API calls)."""
+
+    document_name: str
+    document_type: str
+    overall_risk: str = Field(description="low/medium/high/critical")
+    bottom_line: str = Field(description="2-3 sentences: deal posture, biggest concern, recommendation")
+    red_flags: list[RedFlag] = Field(default_factory=list)
+    investor_asks: list[str] = Field(default_factory=list, description="Key things investor is requesting")
+    must_negotiate: list[str] = Field(default_factory=list, description="Top 3-5 pushback items")
+
+
 class FullAnalysis(BaseModel):
     """Complete analysis result combining all passes."""
 
     document_name: str
     document_type: str = Field(description="e.g., 'Term Sheet', 'SHA', 'SSA'")
+    executive_summary: Optional[ExecutiveSummary] = None
     sections: list[AnalysisSection] = Field(default_factory=list)
     explainer: ExplainerOutput = Field(default_factory=ExplainerOutput)
     impact: Optional[ImpactOutput] = None

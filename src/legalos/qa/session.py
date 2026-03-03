@@ -127,5 +127,5 @@ def _build_analysis_context(analysis: FullAnalysis) -> str:
         parts.append(f"## {section.section_name} (Risk: {section.risk_level})")
         parts.append(section.summary)
         for f in section.findings[:5]:  # Top 5 per section to save tokens
-            parts.append(f"- [{f.severity.value}] {f.title}: {f.explanation}")
+            parts.append(f"- [{f.severity.value}] {f.title}: {f.why_it_matters}")
     return "\n".join(parts)

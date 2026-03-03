@@ -111,8 +111,8 @@ body {
 }
 
 .doc-header {
-    margin-bottom: 32px;
-    padding-bottom: 24px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
     border-bottom: 2px solid var(--border);
 }
 
@@ -127,16 +127,120 @@ body {
     color: var(--text-muted);
 }
 
+/* Executive Summary */
+.executive-summary {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+}
+
+.exec-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.exec-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.exec-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.exec-gauge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gauge-label {
+    font-size: 13px;
+    font-weight: 600;
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.gauge-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.gauge-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.fill-low { background: var(--green); }
+.fill-medium { background: var(--yellow); }
+.fill-high { background: var(--orange); }
+.fill-critical { background: var(--red); }
+
+.gauge-value {
+    font-size: 13px;
+    font-weight: 600;
+    width: 40px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.exec-bottom-line {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+
+.exec-checklist {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+}
+
+.exec-checklist h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+}
+
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
 /* Sections */
 .section {
-    margin-bottom: 48px;
+    margin-bottom: 32px;
 }
 
 .section-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .section-header h2 {
@@ -162,22 +266,22 @@ body {
 .section-summary {
     font-size: 15px;
     color: var(--text-muted);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     line-height: 1.7;
 }
 
-/* Findings table */
+/* Findings */
 .findings {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .finding {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 16px 20px;
+    padding: 14px 18px;
     border-left: 4px solid var(--border);
 }
 
@@ -190,7 +294,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+}
+
+.finding-header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
 .finding-title {
@@ -215,7 +326,6 @@ body {
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    margin-bottom: 8px;
 }
 
 .tag-standard   { background: var(--green-bg);  color: var(--green);  }
@@ -223,18 +333,55 @@ body {
 .tag-unusual    { background: var(--red-bg);    color: var(--red);    }
 .tag-missing    { background: var(--purple-bg); color: var(--purple); }
 
+.finding-why {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+.finding-action {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.finding-action strong {
+    color: var(--accent);
+}
+
+.finding-source {
+    margin-top: 6px;
+}
+
+.finding-source summary {
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    list-style: none;
+}
+
+.finding-source summary::before {
+    content: '\25B8 ';
+    color: var(--text-muted);
+}
+
+.finding-source[open] summary::before {
+    content: '\25BE ';
+}
+
 .finding-quote {
     font-style: italic;
     font-size: 13px;
     color: var(--text-muted);
-    border-left: 3px solid var(--border);
-    padding-left: 12px;
-    margin: 8px 0;
-    line-height: 1.6;
+    border-left: 2px solid var(--border);
+    padding-left: 10px;
+    margin: 6px 0 2px;
+    line-height: 1.5;
 }
 
 .finding-body p {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     font-size: 14px;
 }
 
@@ -308,18 +455,43 @@ body {
     border-bottom: 1px solid var(--border);
 }
 
-/* Negotiation Items */
+/* Negotiation Checklist */
+.negotiation-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.negotiation-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.negotiation-check input[type="checkbox"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+/* Legacy negotiation items (backward compat) */
 .negotiation-item {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 12px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
 }
 
 .negotiation-item h4 {
     font-size: 15px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .negotiation-item p {
@@ -356,12 +528,12 @@ body {
 }
 
 .term-card summary::before {
-    content: '▸ ';
+    content: '\25B8 ';
     color: var(--text-muted);
 }
 
 .term-card[open] summary::before {
-    content: '▾ ';
+    content: '\25BE ';
 }
 
 .term-card-body {
@@ -373,11 +545,45 @@ body {
     margin-bottom: 8px;
 }
 
+/* Quick scan: Investor ask cards */
+.investor-ask-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+/* Quick scan: Upgrade banner */
+.upgrade-banner {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: var(--accent-light);
+    border: 1px solid #93c5fd;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1e3a5f;
+}
+
+.upgrade-banner code {
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+}
+
 /* Print styles */
 @media print {
     .sidebar { display: none; }
     .main { margin-left: 0; padding: 16px; }
     .section { page-break-inside: avoid; }
     .finding { break-inside: avoid; }
+    .executive-summary { break-inside: avoid; }
     body { font-size: 12px; }
+    .feedback-bar { display: none !important; }
 }

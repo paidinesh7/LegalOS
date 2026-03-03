@@ -95,8 +95,7 @@ def extract_suggestions(analysis: FullAnalysis) -> dict:
     for section in analysis.sections:
         all_text_parts.append(section.summary)
         for f in section.findings:
-            all_text_parts.append(f.explanation)
-            all_text_parts.append(f.founder_impact)
+            all_text_parts.append(f.why_it_matters)
 
     combined = " ".join(all_text_parts)
 

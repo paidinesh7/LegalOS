@@ -25,12 +25,14 @@
             box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
         }
         .feedback-bar .counter { font-size: 13px; color: #6b7280; }
-        .feedback-bar .export-btn {
+        .feedback-bar .save-btn {
             background: #4f46e5; color: #fff; border: none; border-radius: 6px;
             padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 500;
+            transition: background 0.15s;
         }
-        .feedback-bar .export-btn:hover { background: #4338ca; }
-        .feedback-bar .export-btn:disabled { background: #9ca3af; cursor: default; }
+        .feedback-bar .save-btn:hover { background: #4338ca; }
+        .feedback-bar .save-btn:disabled { background: #9ca3af; cursor: default; }
+        .feedback-bar .save-btn.copied { background: #16a34a; }
     </style>
 </head>
 <body>
@@ -40,6 +42,15 @@
     <h1>LegalOS</h1>
     <p class="subtitle">Legal Document Analyzer</p>
     <nav>
+        {% if is_quick_scan %}
+        <a href="#quick-summary">Summary</a>
+        <a href="#red-flags">Red Flags</a>
+        <a href="#investor-asks">Investor Asks</a>
+        <a href="#must-negotiate">Must Negotiate</a>
+        {% else %}
+        {% if analysis.executive_summary %}
+        <a href="#executive-summary">Executive Summary</a>
+        {% endif %}
         {% for section in analysis.sections %}
         <a href="#{{ section.section_id }}">{{ section.section_name }}</a>
         {% endfor %}
@@ -54,6 +65,7 @@
         {% endif %}
         {% if knowledge_entries %}
         <a href="#knowledge-applied">Knowledge Applied</a>
+        {% endif %}
         {% endif %}
     </nav>
     <div class="risk-legend">
@@ -80,6 +92,128 @@
         {% endif %}
     </div>
 
+    {% if is_quick_scan %}
+    <!-- Quick Scan: Summary -->
+    <div class="executive-summary" id="quick-summary">
+        <div class="exec-header">
+            <h2>Quick Scan</h2>
+            <span class="risk-badge risk-{{ analysis.overall_risk }}">{{ analysis.overall_risk }}</span>
+        </div>
+        <p class="exec-bottom-line">{{ analysis.bottom_line }}</p>
+    </div>
+
+    <!-- Quick Scan: Red Flags -->
+    {% if analysis.red_flags %}
+    <div class="section" id="red-flags">
+        <div class="section-header">
+            <h2>Red Flags</h2>
+        </div>
+        <div class="findings">
+            {% for flag in analysis.red_flags %}
+            <div class="finding severity-{{ flag.severity.value }}">
+                <div class="finding-header">
+                    <span class="finding-title">{{ flag.title }}</span>
+                    <div class="finding-header-right">
+                        <span class="severity-tag tag-{{ flag.severity.value }}">{{ flag.severity.value }}</span>
+                        <span class="finding-clause">{{ flag.clause_reference }}</span>
+                    </div>
+                </div>
+                {% if flag.what_it_says %}
+                <p class="finding-why"><strong>What it says:</strong> {{ flag.what_it_says }}</p>
+                {% endif %}
+                {% if flag.why_its_a_problem %}
+                <p class="finding-why"><strong>Why it's a problem:</strong> {{ flag.why_its_a_problem }}</p>
+                {% endif %}
+                {% if flag.pushback %}
+                <p class="finding-action"><strong>Pushback:</strong> {{ flag.pushback }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Scan: Investor Asks -->
+    {% if analysis.investor_asks %}
+    <div class="section" id="investor-asks">
+        <div class="section-header">
+            <h2>Investor Asks</h2>
+        </div>
+        <p class="section-summary">Key things the investor is requesting in this deal.</p>
+        <div class="findings">
+            {% for ask in analysis.investor_asks %}
+            <div class="investor-ask-card">
+                <span>{{ ask }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Scan: Must Negotiate -->
+    {% if analysis.must_negotiate %}
+    <div class="section" id="must-negotiate">
+        <div class="section-header">
+            <h2>Must Negotiate</h2>
+        </div>
+        <div class="exec-checklist">
+            {% for item in analysis.must_negotiate %}
+            <label class="checklist-item">
+                <input type="checkbox">
+                <span>{{ item }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Upgrade Banner -->
+    <div class="upgrade-banner">
+        <strong>Want the full picture?</strong>
+        Run <code>legalos analyze &lt;file&gt; --deep</code> for a detailed section-by-section analysis with impact scores, exit waterfall, and negotiation checklist.
+    </div>
+
+    {% else %}
+    <!-- Executive Summary -->
+    {% if analysis.executive_summary %}
+    {% set exec = analysis.executive_summary %}
+    <div class="executive-summary" id="executive-summary">
+        <div class="exec-header">
+            <h2>Executive Summary</h2>
+            <span class="risk-badge risk-{{ exec.overall_risk }}">{{ exec.overall_risk }}</span>
+        </div>
+
+        {% if analysis.impact %}
+        <div class="exec-scores">
+            {% set scores = analysis.impact.scores %}
+            {% for label, score in [('Control', scores.control_score), ('Economics', scores.economics_score), ('Flexibility', scores.flexibility_score)] %}
+            <div class="exec-gauge">
+                <span class="gauge-label">{{ label }}</span>
+                <div class="gauge-bar">
+                    <div class="gauge-fill {% if score <= 3 %}fill-low{% elif score <= 5 %}fill-medium{% elif score <= 7 %}fill-high{% else %}fill-critical{% endif %}" style="width: {{ score * 10 }}%"></div>
+                </div>
+                <span class="gauge-value">{{ score }}/10</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <p class="exec-bottom-line">{{ exec.bottom_line }}</p>
+
+        {% if exec.must_negotiate %}
+        <div class="exec-checklist">
+            <h3>Must Negotiate</h3>
+            {% for item in exec.must_negotiate %}
+            <label class="checklist-item">
+                <input type="checkbox">
+                <span>{{ item }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <!-- Analysis Sections -->
     {% for section in analysis.sections %}
     <div class="section" id="{{ section.section_id }}">
@@ -97,17 +231,23 @@
                  data-finding-title="{{ finding.title | e }}">
                 <div class="finding-header">
                     <span class="finding-title">{{ finding.title }}</span>
-                    <span class="finding-clause">{{ finding.clause_reference }}</span>
+                    <div class="finding-header-right">
+                        <span class="severity-tag tag-{{ finding.severity.value }}">{{ finding.severity.value }}</span>
+                        <span class="finding-clause">{{ finding.clause_reference }}</span>
+                    </div>
                 </div>
-                <span class="severity-tag tag-{{ finding.severity.value }}">{{ finding.severity.value }}</span>
-                {% if finding.quoted_text %}
-                <div class="finding-quote">{{ finding.quoted_text | truncate(300) }}</div>
+                {% if finding.why_it_matters %}
+                <p class="finding-why">{{ finding.why_it_matters }}</p>
                 {% endif %}
-                <div class="finding-body">
-                    <p><strong>Explanation:</strong> {{ finding.explanation }}</p>
-                    <p><strong>Founder Impact:</strong> {{ finding.founder_impact }}</p>
-                    <p><strong>Recommendation:</strong> {{ finding.recommendation }}</p>
-                </div>
+                {% if finding.action %}
+                <p class="finding-action"><strong>Action:</strong> {{ finding.action }}</p>
+                {% endif %}
+                {% if finding.quoted_text %}
+                <details class="finding-source">
+                    <summary>View source text</summary>
+                    <div class="finding-quote">{{ finding.quoted_text | truncate(300) }}</div>
+                </details>
+                {% endif %}
                 <div class="finding-feedback">
                     <button class="vote-btn" data-vote="up" onclick="vote(this)" title="Helpful finding">&#x1f44d; Helpful</button>
                     <button class="vote-btn" data-vote="down" onclick="vote(this)" title="Not relevant">&#x1f44e; Not relevant</button>
@@ -169,15 +309,15 @@
         {% endif %}
 
         {% if analysis.impact.top_negotiation_items %}
-        <h3 style="margin-bottom: 12px;">Top Negotiation Priorities</h3>
-        {% for item in analysis.impact.top_negotiation_items %}
-        <div class="negotiation-item">
-            <h4><span class="priority-badge">#{{ item.priority }}</span>{{ item.item }}</h4>
-            <p><strong>Current:</strong> {{ item.current_language }}</p>
-            <p><strong>Suggested:</strong> {{ item.suggested_change }}</p>
-            <p><strong>Why:</strong> {{ item.reasoning }}</p>
+        <h3 style="margin-bottom: 12px;">Negotiation Checklist</h3>
+        <div class="negotiation-checklist">
+            {% for item in analysis.impact.top_negotiation_items %}
+            <label class="negotiation-check">
+                <input type="checkbox">
+                <span><strong>#{{ item.priority }} {{ item.item }}</strong> &mdash; {{ item.suggested_change }} ({{ item.reasoning }})</span>
+            </label>
+            {% endfor %}
         </div>
-        {% endfor %}
         {% endif %}
     </div>
     {% endif %}
@@ -251,16 +391,18 @@
         {% endfor %}
     </div>
     {% endif %}
+    {% endif %}
 
-    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
+    <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
         Generated by LegalOS. This analysis is AI-generated and should not be treated as legal advice. Always consult with a qualified lawyer.
     </div>
 </div>
 
+{% if not is_quick_scan %}
 <!-- Floating feedback bar -->
 <div class="feedback-bar" id="feedbackBar" style="display: none;">
     <span class="counter" id="voteCounter">0 findings rated</span>
-    <button class="export-btn" onclick="exportFeedback()">Export Feedback JSON</button>
+    <button class="save-btn" id="saveBtn" onclick="saveFeedback()">Save Feedback</button>
 </div>
 
 <script>
@@ -308,25 +450,67 @@
         }
     };
 
-    window.exportFeedback = function() {
-        var payload = {
+    window.saveFeedback = function() {
+        var upTitles = [];
+        var downTitles = [];
+        var voteList = Object.values(votes);
+        for (var i = 0; i < voteList.length; i++) {
+            if (voteList[i].vote === 'up') {
+                upTitles.push(voteList[i].finding_title);
+            } else {
+                downTitles.push(voteList[i].finding_title);
+            }
+        }
+
+        var parts = ['legalos feedback submit'];
+        if (upTitles.length > 0) {
+            parts.push('--up "' + upTitles.join(', ') + '"');
+        }
+        if (downTitles.length > 0) {
+            parts.push('--down "' + downTitles.join(', ') + '"');
+        }
+        parts.push('--doc "' + docName + '"');
+        var command = parts.join(' ');
+
+        // Also write to sidecar data attribute for auto-import
+        var sidecarData = {
             document_name: docName,
             timestamp: new Date().toISOString(),
-            votes: Object.values(votes)
+            votes: voteList
         };
-        var json = JSON.stringify(payload, null, 2);
-        var blob = new Blob([json], {type: 'application/json'});
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'legalos_feedback_' + docName.replace(/[^a-zA-Z0-9]/g, '_') + '.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        document.documentElement.setAttribute('data-feedback', JSON.stringify(sidecarData));
+
+        // Copy command to clipboard
+        navigator.clipboard.writeText(command).then(function() {
+            var btn = document.getElementById('saveBtn');
+            btn.textContent = 'Copied! Paste in terminal.';
+            btn.classList.add('copied');
+            setTimeout(function() {
+                btn.textContent = 'Save Feedback';
+                btn.classList.remove('copied');
+            }, 3000);
+        }).catch(function() {
+            // Fallback: select from a temporary textarea
+            var ta = document.createElement('textarea');
+            ta.value = command;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            var btn = document.getElementById('saveBtn');
+            btn.textContent = 'Copied! Paste in terminal.';
+            btn.classList.add('copied');
+            setTimeout(function() {
+                btn.textContent = 'Save Feedback';
+                btn.classList.remove('copied');
+            }, 3000);
+        });
     };
 })();
 </script>
+{% endif %}
 
 </body>
 </html>

@@ -280,6 +280,68 @@ def import_report_feedback(
     return item
 
 
+def submit_feedback_from_titles(
+    doc_name: str,
+    up_titles: list[str],
+    down_titles: list[str],
+    directory: Optional[Path] = None,
+) -> FeedbackItem:
+    """Create a FeedbackItem from explicit up/down title lists (from CLI submit).
+
+    Downvoted titles become false_positives.
+    """
+    item = FeedbackItem(
+        document_name=doc_name,
+        false_positives=down_titles,
+    )
+    append_feedback(item, directory)
+    return item
+
+
+def auto_import_sidecar_feedback(directory: Optional[Path] = None) -> int:
+    """Scan CWD for *.feedback.json sidecar files and import pending ones.
+
+    Returns the number of sidecar files imported.
+    """
+    scan_dir = directory or Path.cwd()
+    imported = 0
+
+    for sidecar_path in scan_dir.glob("*.feedback.json"):
+        try:
+            data = json.loads(sidecar_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+
+        # Skip already-submitted or empty-vote sidecars
+        if data.get("submitted", False):
+            continue
+        votes = data.get("votes", [])
+        if not votes:
+            continue
+
+        # Convert to ReportFeedback and import
+        report_fb = ReportFeedback.model_validate(data)
+        false_positives = [
+            v.finding_title for v in report_fb.votes if v.vote == "down"
+        ]
+        if not false_positives and not any(v.vote == "up" for v in report_fb.votes):
+            continue
+
+        item = FeedbackItem(
+            document_name=report_fb.document_name,
+            timestamp=report_fb.timestamp,
+            false_positives=false_positives,
+        )
+        append_feedback(item)
+
+        # Mark sidecar as submitted
+        data["submitted"] = True
+        sidecar_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        imported += 1
+
+    return imported
+
+
 def check_feedback_effectiveness(
     store: FeedbackStore,
     current_finding_titles: list[str],
