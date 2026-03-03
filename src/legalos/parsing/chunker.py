@@ -50,11 +50,7 @@ def chunk_document(text: str, max_chunk_tokens: int = SINGLE_PASS_LIMIT) -> list
             f"Maximum supported: {MAX_DOCUMENT_TOKENS:,} tokens."
         )
 
-    # Split at section boundaries
-    sections = _SECTION_BREAK.split(text)
-    # Re-attach the split markers (lookahead doesn't consume)
-    # Actually the pattern uses lookahead so sections keeps full text
-    # But split with lookahead can be tricky, let's use findall approach
+    # Find section boundaries
     boundaries = list(_SECTION_BREAK.finditer(text))
     if not boundaries:
         # No section boundaries found — split at paragraph breaks

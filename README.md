@@ -1,6 +1,6 @@
 # LegalOS
 
-An AI-powered legal review tool for Indian startup founders navigating fundraising. Term sheets, SHAs, SSAs — every document in a fundraise has clauses that can shift control, economics, or flexibility away from founders. LegalOS helps you stay on top of all of it.
+An AI-powered legal review tool for Indian startup founders navigating fundraising. Term sheets, SHAs, SSAs, SPAs, SAFEs, convertible notes — every document in a fundraise has clauses that can shift control, economics, or flexibility away from founders. LegalOS helps you stay on top of all of it.
 
 Drop in a document, get a clause-by-clause breakdown in plain English — what's standard, what's aggressive, and what to push back on. The more you use it, the better it gets at flagging what matters to you.
 
@@ -13,9 +13,10 @@ Built for Indian startup founders. Powered by Claude.
 When you run LegalOS on a document, it produces:
 
 - **A full HTML report** that opens in your browser — every clause explained in plain English, color-coded by severity (green = standard, orange = aggressive, red = unusual)
-- **Impact scores** — how much control, economics, and flexibility you're giving up, rated 1–10
+- **Impact scores** — how much control, economics, and flexibility you're giving up, rated 1–10 with calibrated anchors (3 = market-standard, 7 = significantly investor-favorable)
+- **Exit waterfall** — actual ₹ amounts showing what founders vs investors get at 2x, 5x, 10x exits, accounting for participating vs non-participating preference
 - **Negotiation priorities** — a ranked list of what to push back on, with suggested alternative language you can share with your lawyer
-- **A redlined Word doc** — your document with margin comments containing counter-proposals, ready to forward to investor counsel
+- **A redlined Word doc** — your document with proper Word margin comments (visible in the Review pane) containing counter-proposals, ready to forward to investor counsel
 - **Q&A in your terminal** — after the report, you can ask follow-up questions like "What happens if we raise a down round?" or "Can they block ESOP grants?"
 
 ---
@@ -96,7 +97,7 @@ legalos analyze
 
 That's it. LegalOS picks up everything in the folder.
 
-**What happens:** LegalOS reads the document, runs 8 analysis passes, and opens an interactive HTML report in your browser. After the report, it drops you into a Q&A session in the terminal where you can ask questions about the document. Type `quit` when you're done.
+**What happens:** By default, LegalOS runs a quick scan (single API call) and opens an HTML report in your browser. For a full section-by-section deep analysis (9 passes), add `--deep`. After the report, it drops you into a Q&A session in the terminal where you can ask questions about the document. Type `quit` when you're done.
 
 ### Analyze a specific file or folder
 
@@ -142,6 +143,8 @@ legalos analyze document.pdf --type term_sheet
 
 Valid types: `term_sheet`, `sha`, `ssa`, `spa`, `convertible_note`, `safe`
 
+Each document type triggers specialized emphasis — e.g. SAFEs focus on valuation cap vs discount interplay and MFN clauses, convertible notes on conversion mechanics and qualified financing definitions, SPAs on indemnification caps and completion conditions.
+
 ---
 
 ## Analysis Coverage
@@ -154,8 +157,8 @@ Valid types: `term_sheet`, `sha`, `ssa`, `spa`, `convertible_note`, `safe`
 | **Key Events & Exit** | Liquidation preferences, exit provisions, IPO conditions, put/call options |
 | **Founder Obligations** | Non-compete, lock-in, vesting, indemnification |
 | **Financial Terms** | Valuation, tranches, milestones, conditions precedent |
-| **Plain English Guide** | Every complex term explained with real-world Indian startup examples |
-| **Impact Assessment** | Control/economics/flexibility scores, exit waterfall scenarios, negotiation priorities |
+| **Plain English Guide** | Every complex term explained with real-world Indian startup examples, prioritizing terms flagged as unusual or aggressive |
+| **Impact Assessment** | Calibrated control/economics/flexibility scores, exit waterfall with participating vs non-participating preference math, negotiation priorities |
 
 ---
 
@@ -164,7 +167,7 @@ Valid types: `term_sheet`, `sha`, `ssa`, `spa`, `convertible_note`, `safe`
 | Format | What Works |
 |--------|-----------|
 | **PDF** | Regular PDFs and scanned PDFs (with OCR installed) |
-| **Word (.docx)** | Preserves tables and headings |
+| **Word (.docx)** | Preserves tables (interleaved in document order), headings, and footnotes |
 | **Images** | PNG, JPG, TIFF — for photos of printed documents (requires OCR install) |
 
 ---
@@ -178,6 +181,20 @@ Valid types: `term_sheet`, `sha`, `ssa`, `spa`, `convertible_note`, `safe`
 | `legalos analyze --model opus` | Opus | Final review before signing |
 
 Add `-v` to any command to see how much a run cost.
+
+### Rate limiting
+
+LegalOS paces API calls to avoid rate limits. The default interval between calls is 5 seconds. If you have a low-tier Anthropic account and hit rate limits, increase it:
+
+```
+export LEGALOS_CALL_INTERVAL=20
+```
+
+If you have a high-tier account and want faster analysis:
+
+```
+export LEGALOS_CALL_INTERVAL=1
+```
 
 ---
 
@@ -218,7 +235,7 @@ legalos redline sha.docx --provider openai --model o3
 
 You can also pass a full model ID directly: `--model gpt-4o-2024-08-06`
 
-> **Note:** Anthropic remains the default and best-tested provider. OpenAI and Google support is functional but less battle-tested.
+> **Note:** Anthropic remains the default and best-tested provider. OpenAI and Google support is functional but less battle-tested. Token limits are automatically adjusted per provider (150K for Anthropic, 100K for OpenAI, 500K for Google).
 
 ---
 
@@ -321,7 +338,7 @@ You can use the LegalOS analysis framework directly inside a Claude Project on [
 2. Open [`claude-project/instructions.md`](claude-project/instructions.md) and paste its contents into the Project's custom instructions
 3. Upload these 3 files from [`claude-project/`](claude-project/) as knowledge files:
    - `analysis_checklist.md` — 6 section analysis checklists
-   - `doc_type_guidance.md` — document-type emphasis areas
+   - `doc_type_guidance.md` — document-type emphasis areas (term sheet, SHA, SSA, SPA, SAFE, convertible note)
    - `scoring_rubric.md` — severity levels, impact scores, output formats
 4. Upload your legal document (PDF or Word) and start chatting
 

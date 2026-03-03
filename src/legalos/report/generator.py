@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import re
 import webbrowser
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -44,7 +46,7 @@ def generate_report(
         raise ReportError(f"Failed to render report: {e}") from e
 
     if output_path is None:
-        stem = analysis.document_name.replace(" ", "_").replace(",", "")
+        stem = re.sub(r'[^\w\-.]', '_', analysis.document_name)
         output_path = Path(f"legalos_report_{stem}.html")
 
     output_path.write_text(html, encoding="utf-8")
@@ -68,7 +70,7 @@ def _write_feedback_sidecar(report_path: Path, analysis: FullAnalysis) -> Path:
     sidecar_path = report_path.with_suffix(".feedback.json")
     sidecar = {
         "document_name": analysis.document_name,
-        "timestamp": "",
+        "timestamp": datetime.now().isoformat(),
         "votes": [],
         "submitted": False,
     }
@@ -102,7 +104,7 @@ def generate_quick_report(
         raise ReportError(f"Failed to render quick scan report: {e}") from e
 
     if output_path is None:
-        stem = scan.document_name.replace(" ", "_").replace(",", "")
+        stem = re.sub(r'[^\w\-.]', '_', scan.document_name)
         output_path = Path(f"legalos_quickscan_{stem}.html")
 
     output_path.write_text(html, encoding="utf-8")

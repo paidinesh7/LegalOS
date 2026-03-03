@@ -29,6 +29,7 @@ from legalos.analysis.schemas import (
     RedlineOutput,
 )
 from legalos.parsing.base import ParsedDocument
+from legalos.config import SINGLE_PASS_LIMIT
 from legalos.parsing.chunker import DocumentChunk, chunk_document
 from legalos.profile.preferences_export import load_preferences_for_analysis
 from legalos.profile.prompt_injection import (
@@ -42,11 +43,11 @@ from legalos.utils.progress import make_progress, print_warning
 
 
 def _merge_findings(all_findings: list[Finding]) -> list[Finding]:
-    """Deduplicate findings by clause_reference."""
-    seen: set[str] = set()
+    """Deduplicate findings by (clause_reference, title)."""
+    seen: set[tuple[str, str]] = set()
     merged: list[Finding] = []
     for f in all_findings:
-        key = f.clause_reference.strip().lower()
+        key = (f.clause_reference.strip().lower(), f.title.strip().lower())
         if key not in seen:
             seen.add(key)
             merged.append(f)
@@ -143,13 +144,14 @@ def run_analysis(
     feedback: Optional[FeedbackStore] = None,
     document_type: str = "",
     learnings: Optional[LearningsStore] = None,
+    single_pass_limit: int = SINGLE_PASS_LIMIT,
 ) -> FullAnalysis:
     """Run full analysis pipeline across all documents."""
     # Combine all document text
     combined_text = "\n\n---\n\n".join(doc.full_text for doc in documents)
     doc_name = ", ".join(doc.source_path.name for doc in documents)
 
-    chunks = chunk_document(combined_text)
+    chunks = chunk_document(combined_text, max_chunk_tokens=single_pass_limit)
 
     # Build augmented system prompt (cached across all passes)
     preferences_doc = load_preferences_for_analysis()
@@ -309,10 +311,11 @@ def run_redline_analysis(
     profile: Optional[FounderProfile] = None,
     feedback: Optional[FeedbackStore] = None,
     learnings: Optional[LearningsStore] = None,
+    single_pass_limit: int = SINGLE_PASS_LIMIT,
 ) -> RedlineOutput:
     """Run redline-focused analysis for DOCX annotation."""
     combined_text = "\n\n---\n\n".join(doc.full_text for doc in documents)
-    chunks = chunk_document(combined_text)
+    chunks = chunk_document(combined_text, max_chunk_tokens=single_pass_limit)
 
     preferences_doc = load_preferences_for_analysis()
     system_prompt = build_full_system_prompt(

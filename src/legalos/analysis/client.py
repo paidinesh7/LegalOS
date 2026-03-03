@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
-from typing import TypeVar, Type
+from typing import Protocol, TypeVar, Type, runtime_checkable
 
 from pydantic import BaseModel
 
@@ -20,8 +21,86 @@ RETRY_BACKOFF = 2.0
 MAX_BACKOFF = 90.0
 
 # Rate-limit pacing: minimum seconds between API calls.
-# Set >0 for low-tier accounts (e.g. 20 for 4K output tokens/min limit).
-_MIN_CALL_INTERVAL = 20.0
+# Override with LEGALOS_CALL_INTERVAL env var (e.g. "20" for low-tier accounts).
+_MIN_CALL_INTERVAL = float(os.environ.get("LEGALOS_CALL_INTERVAL", "5.0"))
+
+
+# ── Protocol ────────────────────────────────────────────────────
+
+
+@runtime_checkable
+class AnalysisClientProtocol(Protocol):
+    """Formal interface for LLM analysis clients."""
+
+    model_id: str
+    usage: TokenUsage
+
+    def analyze(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        response_model: Type[T],
+        document_text: str | None = ...,
+        max_tokens: int = ...,
+    ) -> T: ...
+
+    def chat(
+        self,
+        system_prompt: str,
+        messages: list[dict],
+        document_text: str | None = ...,
+    ) -> str: ...
+
+
+# ── Base Client ─────────────────────────────────────────────────
+
+
+class _BaseClient:
+    """Shared pacing and retry logic for all provider clients."""
+
+    def __init__(self, model_id: str, verbose: bool, call_interval: float) -> None:
+        self.model_id = model_id
+        self.verbose = verbose
+        self.usage = TokenUsage()
+        self._last_call_time: float = 0.0
+        self._call_interval: float = call_interval
+
+    def _pace(self) -> None:
+        """Wait if needed to respect rate limits between calls."""
+        if self._call_interval > 0 and self._last_call_time > 0:
+            elapsed = time.time() - self._last_call_time
+            if elapsed < self._call_interval:
+                wait = self._call_interval - elapsed
+                if self.verbose:
+                    print(f"  Pacing: waiting {wait:.1f}s between calls…")
+                time.sleep(wait)
+
+    def _retry_call(self, fn, retryable_errors: tuple = (), label: str = "API") -> object:
+        """Generic retry loop. *fn* receives the attempt index and should return a result.
+
+        Raise non-retryable exceptions directly; raise retryable ones so they can
+        be caught here.
+        """
+        last_error: Exception | None = None
+        for attempt in range(MAX_RETRIES):
+            self._pace()
+            try:
+                result = fn(attempt)
+                self._last_call_time = time.time()
+                return result
+            except retryable_errors as e:
+                last_error = e
+                wait = min(RETRY_BACKOFF * (2 ** attempt), MAX_BACKOFF)
+                if self.verbose:
+                    print(f"  {label} error, retrying in {wait:.0f}s…")
+                time.sleep(wait)
+                self._last_call_time = time.time()
+            except Exception as e:
+                last_error = e
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_BACKOFF)
+                continue
+        raise APIError(f"{label} call failed after {MAX_RETRIES} retries: {last_error}")
 
 
 def _repair_truncated_json(text: str) -> str:
@@ -119,31 +198,17 @@ def _build_user_content(user_prompt: str, response_model: Type[T]) -> str:
 # ── Anthropic Client ─────────────────────────────────────────────
 
 
-class AnthropicClient:
+class AnthropicClient(_BaseClient):
     """Wraps the Anthropic SDK with prompt caching and structured output."""
 
     def __init__(self, model_id: str, verbose: bool = False) -> None:
         import anthropic
 
-        self.model_id = model_id
-        self.verbose = verbose
-        self.usage = TokenUsage()
+        super().__init__(model_id, verbose, _MIN_CALL_INTERVAL)
         self._client = anthropic.Anthropic(
             api_key=get_api_key("anthropic"),
             max_retries=0,  # We handle retries ourselves
         )
-        self._last_call_time: float = 0.0
-        self._call_interval: float = _MIN_CALL_INTERVAL
-
-    def _pace(self) -> None:
-        """Wait if needed to respect rate limits between calls."""
-        if self._call_interval > 0 and self._last_call_time > 0:
-            elapsed = time.time() - self._last_call_time
-            if elapsed < self._call_interval:
-                wait = self._call_interval - elapsed
-                if self.verbose:
-                    print(f"  Pacing: waiting {wait:.1f}s between calls…")
-                time.sleep(wait)
 
     def analyze(
         self,
@@ -232,6 +297,8 @@ class AnthropicClient:
         document_text: str | None = None,
     ) -> str:
         """Simple chat call for Q&A (no structured output)."""
+        import anthropic
+
         system_parts: list[dict] = []
         system_parts.append({
             "type": "text",
@@ -245,34 +312,53 @@ class AnthropicClient:
                 "cache_control": {"type": "ephemeral"},
             })
 
-        self._pace()
-        response = self._client.messages.create(
-            model=self.model_id,
-            max_tokens=1024,
-            system=system_parts,
-            messages=messages,
-        )
-        self._last_call_time = time.time()
+        last_error: Exception | None = None
+        response = None
+        for attempt in range(MAX_RETRIES):
+            self._pace()
+            try:
+                response = self._client.messages.create(
+                    model=self.model_id,
+                    max_tokens=1024,
+                    system=system_parts,
+                    messages=messages,
+                )
+                self._last_call_time = time.time()
 
-        usage = response.usage
-        self.usage.add(
-            input_t=usage.input_tokens,
-            output_t=usage.output_tokens,
-            cache_write=getattr(usage, "cache_creation_input_tokens", 0) or 0,
-            cache_read=getattr(usage, "cache_read_input_tokens", 0) or 0,
-        )
+                usage = response.usage
+                self.usage.add(
+                    input_t=usage.input_tokens,
+                    output_t=usage.output_tokens,
+                    cache_write=getattr(usage, "cache_creation_input_tokens", 0) or 0,
+                    cache_read=getattr(usage, "cache_read_input_tokens", 0) or 0,
+                )
 
-        return response.content[0].text
+                return response.content[0].text
+
+            except anthropic.RateLimitError as e:
+                last_error = e
+                wait = min(RETRY_BACKOFF * (2 ** attempt), MAX_BACKOFF)
+                if self.verbose:
+                    print(f"  Rate limited, retrying in {wait:.0f}s…")
+                time.sleep(wait)
+                self._last_call_time = time.time()
+            except anthropic.APIError as e:
+                last_error = e
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_BACKOFF)
+                continue
+
+        raise APIError(f"Chat call failed after {MAX_RETRIES} retries: {last_error}")
 
 
-# Backwards-compatible alias
-AnalysisClient = AnthropicClient
+# Backwards-compatible alias — use AnalysisClientProtocol for type hints
+AnalysisClient = AnalysisClientProtocol
 
 
 # ── OpenAI Client ────────────────────────────────────────────────
 
 
-class OpenAIClient:
+class OpenAIClient(_BaseClient):
     """Wraps the OpenAI SDK with the same .analyze()/.chat() interface."""
 
     def __init__(self, model_id: str, verbose: bool = False) -> None:
@@ -284,21 +370,8 @@ class OpenAIClient:
                 "Install it with: pip install -e \".[openai]\""
             )
 
-        self.model_id = model_id
-        self.verbose = verbose
-        self.usage = TokenUsage()
+        super().__init__(model_id, verbose, 0.0)  # OpenAI handles rate limits via headers
         self._client = openai.OpenAI(api_key=get_api_key("openai"))
-        self._last_call_time: float = 0.0
-        self._call_interval: float = 0.0  # OpenAI handles rate limits via headers
-
-    def _pace(self) -> None:
-        if self._call_interval > 0 and self._last_call_time > 0:
-            elapsed = time.time() - self._last_call_time
-            if elapsed < self._call_interval:
-                wait = self._call_interval - elapsed
-                if self.verbose:
-                    print(f"  Pacing: waiting {wait:.1f}s between calls…")
-                time.sleep(wait)
 
     def analyze(
         self,
@@ -408,7 +481,7 @@ class OpenAIClient:
 # ── Google Gemini Client ─────────────────────────────────────────
 
 
-class GeminiClient:
+class GeminiClient(_BaseClient):
     """Wraps the Google GenAI SDK with the same .analyze()/.chat() interface."""
 
     def __init__(self, model_id: str, verbose: bool = False) -> None:
@@ -420,21 +493,8 @@ class GeminiClient:
                 "Install it with: pip install -e \".[google]\""
             )
 
-        self.model_id = model_id
-        self.verbose = verbose
-        self.usage = TokenUsage()
+        super().__init__(model_id, verbose, 0.0)
         self._client = genai.Client(api_key=get_api_key("google"))
-        self._last_call_time: float = 0.0
-        self._call_interval: float = 0.0
-
-    def _pace(self) -> None:
-        if self._call_interval > 0 and self._last_call_time > 0:
-            elapsed = time.time() - self._last_call_time
-            if elapsed < self._call_interval:
-                wait = self._call_interval - elapsed
-                if self.verbose:
-                    print(f"  Pacing: waiting {wait:.1f}s between calls…")
-                time.sleep(wait)
 
     def analyze(
         self,
@@ -493,6 +553,18 @@ class GeminiClient:
 
         text = _extract_json(response.text or "")
 
+        # Detect truncation via finish_reason
+        truncated = False
+        if response.candidates and response.candidates[0].finish_reason:
+            finish = str(response.candidates[0].finish_reason)
+            if "MAX_TOKENS" in finish.upper() or "LENGTH" in finish.upper():
+                truncated = True
+                if self.verbose:
+                    print("  Output truncated — attempting to repair partial JSON…")
+
+        if truncated:
+            text = _repair_truncated_json(text)
+
         try:
             return response_model.model_validate_json(text)
         except Exception as e:
@@ -521,25 +593,40 @@ class GeminiClient:
                 parts.append(f"Assistant: {content}")
         prompt = "\n\n".join(parts)
 
-        self._pace()
-        response = self._client.models.generate_content(
-            model=self.model_id,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=system_content,
-                max_output_tokens=1024,
-            ),
-        )
-        self._last_call_time = time.time()
+        last_error: Exception | None = None
+        for attempt in range(MAX_RETRIES):
+            self._pace()
+            try:
+                response = self._client.models.generate_content(
+                    model=self.model_id,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_content,
+                        max_output_tokens=1024,
+                    ),
+                )
+                self._last_call_time = time.time()
 
-        u = response.usage_metadata
-        if u:
-            self.usage.add(
-                input_t=u.prompt_token_count or 0,
-                output_t=u.candidates_token_count or 0,
-            )
+                u = response.usage_metadata
+                if u:
+                    self.usage.add(
+                        input_t=u.prompt_token_count or 0,
+                        output_t=u.candidates_token_count or 0,
+                    )
 
-        return response.text or ""
+                return response.text or ""
+
+            except Exception as e:
+                last_error = e
+                if attempt < MAX_RETRIES - 1:
+                    wait = min(RETRY_BACKOFF * (2 ** attempt), MAX_BACKOFF)
+                    if self.verbose:
+                        print(f"  Error: {e}, retrying in {wait:.0f}s…")
+                    time.sleep(wait)
+                    self._last_call_time = time.time()
+                continue
+
+        raise APIError(f"Chat call failed after {MAX_RETRIES} retries: {last_error}")
 
 
 # ── Factory ──────────────────────────────────────────────────────

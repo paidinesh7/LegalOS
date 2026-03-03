@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 
-from legalos.config import DEFAULT_ALIAS, resolve_model
+from legalos.config import DEFAULT_ALIAS, get_single_pass_limit, resolve_model
 from legalos.utils.progress import (
     console,
     print_cost,
@@ -876,6 +876,7 @@ def analyze(
             analysis = run_analysis(
                 client, documents, profile=profile, feedback=feedback_store,
                 document_type=document_type or "", learnings=learnings_store,
+                single_pass_limit=get_single_pass_limit(provider),
             )
         except Exception as e:
             print_error(f"Analysis failed: {e}")
@@ -1095,6 +1096,7 @@ def redline(
         redline_output = run_redline_analysis(
             client, documents, profile=profile, feedback=feedback_store,
             learnings=learnings_store,
+            single_pass_limit=get_single_pass_limit(provider),
         )
     except Exception as e:
         print_error(f"Redline analysis failed: {e}")

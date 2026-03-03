@@ -1,5 +1,7 @@
 """Exception hierarchy for LegalOS."""
 
+from __future__ import annotations
+
 
 class LegalOSError(Exception):
     """Base exception for LegalOS."""

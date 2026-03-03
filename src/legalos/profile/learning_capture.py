@@ -13,7 +13,7 @@ from legalos.profile.schemas import (
     LearningSource,
     LearningsStore,
 )
-from legalos.profile.store import append_learning, check_feedback_effectiveness
+from legalos.profile.store import append_learning, batch_append_learnings, check_feedback_effectiveness
 
 
 def auto_capture_learnings(
@@ -41,7 +41,6 @@ def auto_capture_learnings(
         if entry.title.lower() not in existing_titles:
             existing_titles.add(entry.title.lower())
             new_entries.append(entry)
-            append_learning(entry, directory)
 
     # 1. High/critical severity findings -> CLAUSE_PATTERN
     for section in analysis.sections:
@@ -92,6 +91,10 @@ def auto_capture_learnings(
                 tags=_extract_tags(item_text),
                 document_name=analysis.document_name,
             ))
+
+    # Batch write all new entries at once
+    if new_entries:
+        batch_append_learnings(new_entries, directory)
 
     return new_entries
 

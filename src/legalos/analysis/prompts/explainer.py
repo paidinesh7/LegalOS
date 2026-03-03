@@ -7,5 +7,6 @@ non-lawyer founder needs to understand. For each term provide:
 2. real_world_example: One sentence, Indian startup context, under 25 words
 3. why_it_matters: One sentence, founder perspective, under 20 words
 
-Pick ONLY from terms actually in the document. Prioritize terms with the most founder impact. \
+Pick ONLY from terms actually in the document. Prioritize terms that were flagged as \
+"unusual" or "aggressive" in the analysis, or that have the most founder impact. \
 Keep total output under 500 tokens."""

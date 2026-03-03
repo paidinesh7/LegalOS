@@ -405,6 +405,18 @@ def append_learning(
     return _save_learnings(store, directory)
 
 
+def batch_append_learnings(
+    entries: list[LearningEntry],
+    directory: Optional[Path] = None,
+) -> Path | None:
+    """Append multiple learning entries in a single write. Returns the file path or None if empty."""
+    if not entries:
+        return None
+    store = load_learnings(directory)
+    store.entries.extend(entries)
+    return _save_learnings(store, directory)
+
+
 def update_learning(
     entry_id: str,
     updates: dict,

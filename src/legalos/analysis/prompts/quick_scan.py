@@ -37,6 +37,21 @@ indemnification caps, deadlock resolution. SHAs lock in governance for years."""
 Focus on: conditions precedent (achievable? timeline?), representations & warranties scope,
 MAC clause breadth, tranche conditions, use of proceeds restrictions,
 closing mechanics and long-stop date. SSAs have binding financial terms.""",
+
+    "spa": """SPA EMPHASIS:
+Focus on: share transfer mechanics and restrictions, representations & warranties scope
+(seller vs buyer), indemnification caps and baskets, completion conditions and
+long-stop date, escrow/holdback arrangements. SPAs govern change of ownership.""",
+
+    "convertible_note": """CONVERTIBLE NOTE EMPHASIS:
+Focus on: conversion mechanics (automatic vs optional), valuation cap vs discount rate interplay,
+maturity date and repayment terms, qualified financing definition and threshold amount,
+interest rate and accrual, most-favored-nation (MFN) clause, pro-rata rights on conversion.""",
+
+    "safe": """SAFE EMPHASIS:
+Focus on: post-money vs pre-money SAFE structure, valuation cap amount, discount rate,
+MFN (most-favored-nation) clause, pro-rata side letter, dissolution/liquidation treatment,
+definition of equity financing trigger, and whether it counts in the cap table immediately.""",
 }
 
 

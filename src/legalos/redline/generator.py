@@ -3,13 +3,21 @@
 from __future__ import annotations
 
 import difflib
+from datetime import datetime
 from pathlib import Path
 
 from docx import Document
 from docx.shared import Pt as docx_pt, RGBColor
+from lxml import etree
 
 from legalos.analysis.schemas import RedlineComment, RedlineOutput
 from legalos.utils.errors import RedlineError
+
+# Word XML namespaces
+_NSMAP = {
+    "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+    "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+}
 
 
 def _find_text_in_paragraphs(
@@ -40,10 +48,14 @@ def _find_text_in_paragraphs(
             continue
         # Try matching against sliding windows of similar length
         target_len = len(target_clean)
-        for start in range(0, max(1, len(para_text) - target_len // 2)):
+        for start in range(0, max(1, len(para_text) - target_len + 1)):
             end = min(start + target_len + target_len // 4, len(para_text))
             window = para_text[start:end]
-            ratio = difflib.SequenceMatcher(None, target_clean, window).ratio()
+            # Pre-filter with quick_ratio to skip obvious non-matches
+            matcher = difflib.SequenceMatcher(None, target_clean, window)
+            if matcher.quick_ratio() < threshold:
+                continue
+            ratio = matcher.ratio()
             if ratio > best_ratio:
                 best_ratio = ratio
                 best_match = (i, start, end)
@@ -53,23 +65,91 @@ def _find_text_in_paragraphs(
     return None
 
 
-def _add_comment_to_paragraph(
+def _add_word_comment(
     doc: Document,
     para_index: int,
     comment_text: str,
     author: str,
+    comment_id: int,
 ) -> None:
-    """Add a comment as a simple annotation on a paragraph.
+    """Add a proper Word margin comment to a paragraph using lxml.
 
-    Uses a pragmatic approach: appends the comment text as a footnote-style
-    annotation since python-docx comment API varies by version.
+    Injects <w:comment> into the comments part and wraps the paragraph
+    content with <w:commentRangeStart>/<w:commentRangeEnd> markers.
     """
     para = doc.paragraphs[para_index]
-    # Add a visible annotation marker at end of paragraph
-    run = para.add_run(f"  [{author}: {comment_text[:100]}…]" if len(comment_text) > 100 else f"  [{author}: {comment_text}]")
-    run.font.size = docx_pt(8)
-    run.font.color.rgb = RGBColor(0x99, 0x33, 0x33)
-    run.font.italic = True
+    para_elem = para._element
+
+    # Ensure the document has a comments part
+    _ensure_comments_part(doc)
+
+    # Add the comment definition to the comments part
+    comments_part = doc.part.package.part_related_by(
+        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"
+    )
+    comments_elem = comments_part.element
+
+    now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    comment_elem = etree.SubElement(
+        comments_elem,
+        f"{{{_NSMAP['w']}}}comment",
+    )
+    comment_elem.set(f"{{{_NSMAP['w']}}}id", str(comment_id))
+    comment_elem.set(f"{{{_NSMAP['w']}}}author", author)
+    comment_elem.set(f"{{{_NSMAP['w']}}}date", now)
+
+    # Comment body paragraph
+    comment_para = etree.SubElement(comment_elem, f"{{{_NSMAP['w']}}}p")
+    comment_run = etree.SubElement(comment_para, f"{{{_NSMAP['w']}}}r")
+    comment_text_elem = etree.SubElement(comment_run, f"{{{_NSMAP['w']}}}t")
+    comment_text_elem.text = comment_text
+
+    # Add commentRangeStart at the beginning of the paragraph
+    range_start = etree.Element(f"{{{_NSMAP['w']}}}commentRangeStart")
+    range_start.set(f"{{{_NSMAP['w']}}}id", str(comment_id))
+    para_elem.insert(0, range_start)
+
+    # Add commentRangeEnd and commentReference at the end
+    range_end = etree.SubElement(para_elem, f"{{{_NSMAP['w']}}}commentRangeEnd")
+    range_end.set(f"{{{_NSMAP['w']}}}id", str(comment_id))
+
+    ref_run = etree.SubElement(para_elem, f"{{{_NSMAP['w']}}}r")
+    ref_elem = etree.SubElement(ref_run, f"{{{_NSMAP['w']}}}commentReference")
+    ref_elem.set(f"{{{_NSMAP['w']}}}id", str(comment_id))
+
+
+def _ensure_comments_part(doc: Document) -> None:
+    """Ensure the DOCX package has a comments part, creating one if needed."""
+    from docx.opc.constants import RELATIONSHIP_TYPE as RT
+
+    rel_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"
+
+    # Check if comments relationship already exists
+    try:
+        doc.part.package.part_related_by(rel_type)
+        return  # Already exists
+    except KeyError:
+        pass
+
+    # Create comments part
+    from docx.opc.part import Part
+    from docx.opc.packuri import PackURI
+
+    comments_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:comments xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
+        ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        '</w:comments>'
+    )
+
+    comments_part = Part(
+        PackURI("/word/comments.xml"),
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml",
+        comments_xml.encode("utf-8"),
+        doc.part.package,
+    )
+
+    doc.part.relate_to(comments_part, rel_type)
 
 
 def _format_comment(comment: RedlineComment) -> str:
@@ -105,6 +185,7 @@ def generate_redline(
 
     matched_count = 0
     unmatched_comments: list[str] = []
+    comment_id = 0
 
     for comment in redline_output.comments:
         location = _find_text_in_paragraphs(doc, comment.target_text)
@@ -112,17 +193,21 @@ def generate_redline(
 
         if location is not None:
             para_idx, _, _ = location
-            _add_comment_to_paragraph(doc, para_idx, comment_text, author)
+            _add_word_comment(doc, para_idx, comment_text, author, comment_id)
+            comment_id += 1
             matched_count += 1
         else:
             unmatched_comments.append(comment_text)
 
-    # Add unmatched comments as a summary at the start
+    # Add unmatched comments as a styled summary at the start
     if unmatched_comments:
-        # Insert summary paragraph at beginning
-        summary_para = doc.paragraphs[0].insert_paragraph_before(
-            f"[{author} — UNMATCHED COMMENTS]\n" + "\n\n".join(unmatched_comments)
-        )
+        summary_text = f"[{author} — UNMATCHED COMMENTS]\n" + "\n\n".join(unmatched_comments)
+        summary_para = doc.paragraphs[0].insert_paragraph_before(summary_text)
+        # Style the summary paragraph
+        for run in summary_para.runs:
+            run.font.size = docx_pt(9)
+            run.font.color.rgb = RGBColor(0x99, 0x33, 0x33)
+            run.font.italic = True
 
     if output_path is None:
         output_path = source_path.parent / f"{source_path.stem}_redlined.docx"

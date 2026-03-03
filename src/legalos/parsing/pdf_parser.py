@@ -26,28 +26,30 @@ class PDFParser(BaseParser):
         pages: list[PageContent] = []
         metadata = {k: str(v) for k, v in (doc.metadata or {}).items() if v}
 
-        # Try pymupdf4llm markdown extraction (best for structured text)
         try:
-            md_pages = pymupdf4llm.to_markdown(
-                str(path), page_chunks=True, show_progress=False
-            )
-            for chunk in md_pages:
-                page_num = chunk.get("metadata", {}).get("page", len(pages) + 1)
-                text = chunk.get("text", "").strip()
-                if text:
-                    pages.append(PageContent(page_number=page_num, text=text))
-        except Exception:
-            # Fallback to basic pymupdf extraction
-            for i, page in enumerate(doc):
-                text = page.get_text("text").strip()
-                if text:
-                    pages.append(PageContent(page_number=i + 1, text=text))
+            # Try pymupdf4llm markdown extraction (best for structured text)
+            try:
+                md_pages = pymupdf4llm.to_markdown(
+                    str(path), page_chunks=True, show_progress=False
+                )
+                for chunk in md_pages:
+                    page_num = chunk.get("metadata", {}).get("page", len(pages) + 1)
+                    text = chunk.get("text", "").strip()
+                    if text:
+                        pages.append(PageContent(page_number=page_num, text=text))
+            except Exception:
+                # Fallback to basic pymupdf extraction
+                for i, page in enumerate(doc):
+                    text = page.get_text("text").strip()
+                    if text:
+                        pages.append(PageContent(page_number=i + 1, text=text))
 
-        # If no text found, pages might be scanned — flag for OCR
-        if not pages or all(len(p.text) < 50 for p in pages):
-            pages = self._ocr_fallback(doc)
+            # If no text found, pages might be scanned — flag for OCR
+            if not pages or all(len(p.text) < 50 for p in pages):
+                pages = self._ocr_fallback(doc)
+        finally:
+            doc.close()
 
-        doc.close()
         return ParsedDocument(
             source_path=path, file_type="pdf", pages=pages, metadata=metadata
         )

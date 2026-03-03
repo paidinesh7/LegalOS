@@ -93,10 +93,20 @@ PRICING: dict[str, dict[str, float]] = {
     },
 }
 
-# Token thresholds for chunking
-SINGLE_PASS_LIMIT = 150_000
+# Token thresholds for chunking — per-provider single-pass limits
+SINGLE_PASS_LIMITS: dict[str, int] = {
+    "anthropic": 150_000,
+    "openai": 100_000,
+    "google": 500_000,
+}
+SINGLE_PASS_LIMIT = 150_000  # Default fallback
 MAX_DOCUMENT_TOKENS = 500_000
 CHUNK_OVERLAP = 2_000
+
+
+def get_single_pass_limit(provider: str = "anthropic") -> int:
+    """Return the token limit for a single analysis pass."""
+    return SINGLE_PASS_LIMITS.get(provider.lower(), SINGLE_PASS_LIMIT)
 
 
 @dataclass
