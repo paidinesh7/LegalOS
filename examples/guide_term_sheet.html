@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LegalOS — Term Sheet Explainer for Founders</title>
     <style>
-/* LegalOS Report — Professional Legal Aesthetic */
-
 :root {
     --bg: #fafaf9;
     --card-bg: #ffffff;
@@ -17,8 +15,6 @@
     --accent-light: #dbeafe;
     --green: #16a34a;
     --green-bg: #f0fdf4;
-    --yellow: #ca8a04;
-    --yellow-bg: #fefce8;
     --orange: #ea580c;
     --orange-bg: #fff7ed;
     --red: #dc2626;
@@ -31,364 +27,76 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    font-size: 15px;
-}
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
 
 /* Sidebar */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: var(--sidebar-w);
-    height: 100vh;
-    background: var(--card-bg);
-    border-right: 1px solid var(--border);
-    padding: 24px 16px;
-    overflow-y: auto;
-    z-index: 100;
-}
-
-.sidebar h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 4px;
-}
-
-.sidebar .subtitle {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 24px;
-}
-
-.sidebar nav a {
-    display: block;
-    padding: 8px 12px;
-    margin-bottom: 2px;
-    border-radius: 6px;
-    color: var(--text);
-    text-decoration: none;
-    font-size: 14px;
-    transition: background 0.15s;
-}
-
+.sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--card-bg); border-right: 1px solid var(--border); padding: 24px 16px; overflow-y: auto; z-index: 100; }
+.sidebar h1 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.sidebar .subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
+.sidebar nav a { display: block; padding: 8px 12px; margin-bottom: 2px; border-radius: 6px; color: var(--text); text-decoration: none; font-size: 14px; transition: background 0.15s; }
 .sidebar nav a:hover { background: var(--accent-light); }
-.sidebar nav a.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
-
-.risk-legend {
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-}
-
-.risk-legend h3 {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    margin-bottom: 4px;
-}
-
-.legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
+.risk-legend { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+.risk-legend h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
 /* Main content */
-.main {
-    margin-left: var(--sidebar-w);
-    padding: 32px 48px;
-    max-width: 960px;
-}
-
-.doc-header {
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid var(--border);
-}
-
-.doc-header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.doc-header .doc-type {
-    font-size: 14px;
-    color: var(--text-muted);
-}
+.main { margin-left: var(--sidebar-w); padding: 32px 48px; max-width: 960px; }
+.doc-header { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid var(--border); }
+.doc-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.doc-header .doc-type { font-size: 14px; color: var(--text-muted); }
 
 /* Sections */
-.section {
-    margin-bottom: 32px;
-}
+.section { margin-bottom: 32px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.section-header h2 { font-size: 22px; font-weight: 700; }
+.section-summary { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
 
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
+/* Compare table */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0 4px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.compare-table th { background: var(--bg); padding: 8px 12px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 2px solid var(--border); }
+.compare-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table .severity-cell { font-weight: 600; font-size: 12px; white-space: nowrap; width: 100px; }
+.compare-table .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+.compare-table .dot.green { background: var(--green); }
+.compare-table .dot.orange { background: var(--orange); }
+.compare-table .dot.red { background: var(--red); }
+.compare-table .row-standard td:first-child { border-left: 3px solid var(--green); }
+.compare-table .row-aggressive td:first-child { border-left: 3px solid var(--orange); }
+.compare-table .row-unusual td:first-child { border-left: 3px solid var(--red); }
 
-.section-header h2 {
-    font-size: 22px;
-    font-weight: 700;
-}
+/* Takeaway one-liner */
+.takeaway { font-weight: 600; font-size: 14px; margin: 4px 0 8px; padding: 8px 14px; background: var(--purple-bg); border-radius: 6px; line-height: 1.5; }
 
-.section-summary {
-    font-size: 15px;
-    color: var(--text-muted);
-    margin-bottom: 16px;
-    line-height: 1.7;
-}
+/* Checklist */
+.negotiation-checklist { display: flex; flex-direction: column; gap: 4px; }
+.negotiation-check { display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; cursor: pointer; line-height: 1.5; }
+.negotiation-check input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
 
-/* Findings */
-.findings {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.finding {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 18px;
-    border-left: 4px solid var(--border);
-}
-
-.finding.severity-standard  { border-left-color: var(--green);  }
-.finding.severity-aggressive { border-left-color: var(--orange); }
-.finding.severity-unusual    { border-left-color: var(--red);    }
-
-.finding-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 6px;
-}
-
-.finding-title {
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.severity-tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.tag-standard   { background: var(--green-bg);  color: var(--green);  }
-.tag-aggressive { background: var(--orange-bg); color: var(--orange); }
-.tag-unusual    { background: var(--red-bg);    color: var(--red);    }
-
-.finding-why {
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.6;
-    margin-bottom: 4px;
-}
-
-.finding-body p {
-    margin-bottom: 4px;
-    font-size: 14px;
-}
-
-.finding-body strong {
-    color: var(--text);
-}
-
-/* Negotiation Checklist */
-.negotiation-checklist {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.negotiation-check {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 10px 14px;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    line-height: 1.5;
-}
-
-.negotiation-check input[type="checkbox"] {
-    margin-top: 3px;
-    flex-shrink: 0;
-}
-
-/* Guide-specific styles */
-.intro-card {
-    background: var(--accent-light);
-    border: 1px solid #93c5fd;
-    border-radius: 10px;
-    padding: 24px 28px;
-    margin-bottom: 32px;
-    font-size: 15px;
-    line-height: 1.7;
-    color: #1e3a5f;
-}
-
-.intro-card h2 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 8px;
-}
-
+/* Guide-specific */
+.intro-card { background: var(--accent-light); border: 1px solid #93c5fd; border-radius: 10px; padding: 24px 28px; margin-bottom: 32px; font-size: 15px; line-height: 1.7; color: #1e3a5f; }
+.intro-card h2 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
 .intro-card strong { color: #1e3a5f; }
 
-.example-standard {
-    background: var(--green-bg);
-    border-left: 4px solid var(--green);
-    border-radius: 0 8px 8px 0;
-    padding: 12px 16px;
-    margin: 8px 0;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.example-aggressive {
-    background: var(--orange-bg);
-    border-left: 4px solid var(--orange);
-    border-radius: 0 8px 8px 0;
-    padding: 12px 16px;
-    margin: 8px 0;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.example-unusual {
-    background: var(--red-bg);
-    border-left: 4px solid var(--red);
-    border-radius: 0 8px 8px 0;
-    padding: 12px 16px;
-    margin: 8px 0;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.example-standard strong { color: var(--green); }
-.example-aggressive strong { color: var(--orange); }
-.example-unusual strong { color: var(--red); }
-
-.why-box {
-    background: var(--purple-bg);
-    border: 1px solid #c4b5fd;
-    border-radius: 8px;
-    padding: 14px 18px;
-    margin: 12px 0 0;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.why-box strong {
-    color: var(--purple);
-}
-
-.timeline-step {
-    display: flex;
-    gap: 16px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-}
-
+.timeline-step { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 .timeline-step:last-child { border-bottom: none; }
+.timeline-number { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.timeline-number.active { background: var(--green); }
+.timeline-content h4 { font-weight: 600; margin-bottom: 2px; }
+.timeline-content p { color: var(--text-muted); font-size: 13px; }
 
-.timeline-number {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    flex-shrink: 0;
-}
-
-.timeline-number.active {
-    background: var(--green);
-}
-
-.timeline-content h4 {
-    font-weight: 600;
-    margin-bottom: 2px;
-}
-
-.timeline-content p {
-    color: var(--text-muted);
-    font-size: 13px;
-}
-
-.guide-nav {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-}
-
-.guide-nav a {
-    display: inline-block;
-    padding: 10px 20px;
-    background: var(--accent);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background 0.15s;
-}
-
+.guide-nav { display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+.guide-nav a { display: inline-block; padding: 10px 20px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; transition: background 0.15s; }
 .guide-nav a:hover { background: #1e3a8a; }
 
-.math-box {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin: 8px 0;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.8;
-}
+.math-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin: 8px 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; }
 
-/* Print styles */
 @media print {
     .sidebar { display: none; }
     .main { margin-left: 0; padding: 16px; }
     .section { page-break-inside: avoid; }
-    .finding { break-inside: avoid; }
+    .compare-table { break-inside: avoid; }
     body { font-size: 12px; }
 }
     </style>
@@ -436,9 +144,7 @@ body {
     <!-- Intro -->
     <div class="intro-card" id="intro">
         <h2>What is a Term Sheet?</h2>
-        <p>A term sheet is a <strong>1-5 page document</strong> that outlines the key terms of a proposed investment. Think of it as a letter of intent — it captures what the investor wants <em>before</em> lawyers draft the detailed agreements (SHA and SSA).</p>
-        <p style="margin-top: 8px;"><strong>Key thing to know:</strong> Most clauses in a term sheet are <strong>non-binding</strong>. The investor is saying "here's what we'd like" — you can negotiate. However, two clauses are almost always <strong>binding</strong>: exclusivity (no-shop) and confidentiality. Once you sign, you can't shop the deal to other investors during the exclusivity period.</p>
-        <p style="margin-top: 8px;">In India, term sheets follow broadly similar patterns whether the investor is an Indian VC (Sequoia India / Peak XV, Accel, Matrix / Z47) or a foreign fund investing via an offshore structure. The legal agreements that follow will reference the Companies Act 2013, FEMA regulations (for foreign investors), and SEBI rules.</p>
+        <p>A <strong>1-5 page non-binding document</strong> outlining the key terms of a proposed investment — think of it as a letter of intent before lawyers draft the SHA and SSA. Most clauses are negotiable, but <strong>exclusivity</strong> and <strong>confidentiality</strong> are binding from day one.</p>
     </div>
 
     <!-- Timeline -->
@@ -492,54 +198,25 @@ body {
         <div class="section-header">
             <h2>Valuation Basics</h2>
         </div>
-        <p class="section-summary">Pre-money, post-money, price per share, and how ESOP dilution works.</p>
-
-        <p class="finding-why">Valuation determines how much of your company you're giving away. The two numbers that matter are <strong>pre-money valuation</strong> (what your company is worth before the investment) and <strong>post-money valuation</strong> (pre-money + investment amount).</p>
+        <p class="section-summary">Valuation determines how much of your company you're giving away — pre-money + investment = post-money.</p>
 
         <div class="math-box">
             Post-money = Pre-money + Investment<br>
             Investor ownership = Investment / Post-money<br><br>
             <strong>Example:</strong><br>
             Pre-money: ₹40 Cr &nbsp;|&nbsp; Investment: ₹10 Cr<br>
-            Post-money: ₹40 Cr + ₹10 Cr = ₹50 Cr<br>
-            Investor gets: ₹10 Cr / ₹50 Cr = 20%
+            Post-money: ₹50 Cr &nbsp;|&nbsp; Investor gets: 20%
         </div>
 
-        <div class="findings" style="margin-top: 12px;">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">Standard valuation terms</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">Pre-money valuation is stated clearly. Price per share is calculated by dividing pre-money by the fully-diluted share count (including ESOP). Both parties agree on the cap table before and after the round.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> "Pre-money valuation of ₹40 Cr on a fully-diluted basis, including an ESOP pool of 10%. Investment amount of ₹10 Cr for 20% of the post-money equity."
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">ESOP pool inflated pre-money</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Investor asks to expand ESOP from 5% to 15% before the round — this dilutes only founders, not the investor. The "real" pre-money is lower than it looks.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> "Pre-money valuation of ₹40 Cr including a 15% ESOP pool (expanded from current 5%)." The 10% expansion comes entirely out of founder equity. Effective pre-money for founders is closer to ₹34 Cr.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">Valuation subject to diligence adjustment</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">A clause that allows the investor to reduce the valuation after signing the term sheet based on diligence findings. This effectively makes the valuation meaningless — you've given exclusivity for a number that can change.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> "Pre-money valuation of ₹40 Cr, subject to downward adjustment based on findings during due diligence." This is a red flag — the term sheet locks you in, but the investor's commitment is fluid.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> Valuation directly determines how much of your company you own after the round. A seemingly high valuation with a bloated ESOP pool or diligence-adjustment clause can mean you're giving away more than you think. Always calculate your actual ownership percentage post-round, not just the headline number.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>Clear pre-money stated, ESOP included in fully-diluted count</td><td>Pre-money ₹40 Cr incl. 10% ESOP. Investment ₹10 Cr for 20%</td><td>You know exactly what you own post-round</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>ESOP inflated pre-money (5% → 15%) — dilutes only founders</td><td>₹40 Cr headline, but 10% ESOP expansion = effective ₹34 Cr for founders</td><td>Hidden ~₹6 Cr valuation cut borne entirely by founders</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>Valuation "subject to downward adjustment" post-diligence</td><td>₹40 Cr stated, but investor can reprice after you've given exclusivity</td><td>Headline number is meaningless — you're locked in, they're not</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">Always calculate your actual post-round ownership including ESOP dilution. A high headline valuation with a bloated ESOP pool or diligence-adjustment clause hides the real price.</p>
     </div>
 
     <!-- Liquidation Preference -->
@@ -547,54 +224,17 @@ body {
         <div class="section-header">
             <h2>Liquidation Preference</h2>
         </div>
-        <p class="section-summary">What investors get paid first when the company is sold or shut down.</p>
+        <p class="section-summary">Determines payout order when the company is sold — investors with preference get paid before founders see a rupee.</p>
 
-        <p class="finding-why">Liquidation preference determines the order in which money is distributed when there's an "exit" — a sale, merger, or winding up of the company. Investors with a preference get their money back <em>before</em> founders and employees see a rupee.</p>
-
-        <div class="findings">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">1x non-participating preference</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">Investor gets back 1x their investment <em>or</em> their pro-rata share of the exit proceeds — whichever is higher. They choose one, not both. This is the founder-friendly standard.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> Investor put in ₹10 Cr for 20%. Company sells for ₹100 Cr.<br>
-                    Option A: 1x preference = ₹10 Cr<br>
-                    Option B: 20% of ₹100 Cr = ₹20 Cr<br>
-                    Investor picks Option B (₹20 Cr). Founders get ₹80 Cr. Fair outcome.
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">1x participating preference</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Investor gets 1x their money back <em>and then</em> also participates pro-rata in the remaining proceeds. This is "double-dipping" — they get downside protection plus upside participation.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> Investor put in ₹10 Cr for 20%. Company sells for ₹100 Cr.<br>
-                    Step 1: Investor gets ₹10 Cr off the top.<br>
-                    Step 2: Remaining ₹90 Cr split pro-rata. Investor gets 20% = ₹18 Cr.<br>
-                    Investor total: ₹28 Cr (not ₹20 Cr). Founders get ₹72 Cr instead of ₹80 Cr.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">2x+ participating preference</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">Investor gets 2x (or more) their money back before anyone else sees anything, <em>and</em> participates in the remainder. This crushes founder returns in anything other than a massive exit.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> Investor put in ₹10 Cr for 20%. Company sells for ₹100 Cr.<br>
-                    Step 1: Investor gets 2x = ₹20 Cr off the top.<br>
-                    Step 2: Remaining ₹80 Cr split pro-rata. Investor gets 20% = ₹16 Cr.<br>
-                    Investor total: ₹36 Cr. Founders get ₹64 Cr. At a smaller ₹30 Cr exit, founders might get almost nothing.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> Liquidation preference is the single most important economic term after valuation. In a modest exit (say 2-3x the post-money), a participating preference can take a huge chunk of founder returns. Always model your exit scenarios with actual numbers — don't just negotiate the headline valuation.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>1x non-participating — higher of 1x return or pro-rata share</td><td>₹10 Cr for 20%. Exit ₹100 Cr → investor takes ₹20 Cr (pro-rata wins)</td><td>Fair — investor picks the better of two options, not both</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>1x participating — gets 1x back <em>plus</em> pro-rata of remainder</td><td>Same deal. Exit ₹100 Cr → ₹10 Cr + 20% of ₹90 Cr = ₹28 Cr</td><td>Double-dipping. Founders get ₹72 Cr instead of ₹80 Cr</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>2x+ participating — gets 2x back <em>plus</em> pro-rata of remainder</td><td>Same deal. Exit ₹100 Cr → ₹20 Cr + 20% of ₹80 Cr = ₹36 Cr</td><td>Founders get ₹64 Cr. At ₹30 Cr exit, founders get almost nothing</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">Model your exit at 2x, 5x, and 10x post-money. Participating preference crushes founder returns in modest exits.</p>
     </div>
 
     <!-- Anti-Dilution -->
@@ -602,91 +242,35 @@ body {
         <div class="section-header">
             <h2>Anti-Dilution Protection</h2>
         </div>
-        <p class="section-summary">What happens to the investor's price if you raise a future round at a lower valuation (a "down round").</p>
+        <p class="section-summary">Protects investors if a future round prices lower (a "down round") by adjusting their conversion price — at founders' expense.</p>
 
-        <p class="finding-why">Anti-dilution clauses protect investors if the company raises money in the future at a lower price per share than they paid. The investor's conversion price is adjusted downward, effectively giving them more shares for the same money — at the expense of founders.</p>
-
-        <div class="findings">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">Broad-based weighted average</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">The investor's conversion price is adjusted using a weighted average formula that considers the size of the down round relative to the total shares outstanding. A small down round causes only a small adjustment. This is the market standard and is fair to both sides.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> Investor bought at ₹100/share. Down round at ₹60/share, but only 10% of total shares are issued in the down round. The weighted average formula adjusts the investor's price to roughly ₹95/share — a modest correction, not a windfall.
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">Narrow-based weighted average</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Same formula as broad-based, but uses a smaller denominator (only preferred shares, not all shares). This produces a larger price adjustment, giving the investor more additional shares in a down round.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> Same scenario as above, but the narrow base means the investor's price adjusts to roughly ₹85/share instead of ₹95 — significantly more dilution for founders.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">Full ratchet</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">The investor's conversion price drops to the exact price of the down round, regardless of how small the down round is. Even a tiny bridge round at a lower price reprices the entire previous investment.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> Investor bought ₹10 Cr at ₹100/share (1 lakh shares). A small bridge round prices at ₹60/share. Full ratchet adjusts the investor to ₹60/share — they now effectively hold 1.67 lakh shares. Founders are massively diluted even though the down round was small.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> Anti-dilution determines how much pain founders bear in a down round. Broad-based weighted average is fair and market-standard. Full ratchet can be devastating — it turns every small stumble into a major founder dilution event. If an investor insists on full ratchet, treat it as a serious red flag about their intentions.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>Broad-based weighted average — adjustment proportional to down-round size</td><td>Bought at ₹100/share, down round at ₹60 (10% of shares). Adjusts to ~₹95</td><td>Small, fair correction</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>Narrow-based weighted average — smaller denominator, bigger adjustment</td><td>Same scenario. Adjusts to ~₹85 instead of ₹95</td><td>Significantly more dilution for founders</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>Full ratchet — conversion price drops to the new round's price entirely</td><td>Same scenario. Adjusts to ₹60. 1L shares become 1.67L shares</td><td>Even a tiny bridge round causes massive founder dilution</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">Broad-based weighted average is market standard. Full ratchet turns every small stumble into a major dilution event — treat it as a red flag.</p>
     </div>
 
-    <!-- Board Composition -->
+    <!-- Board & Protective Provisions -->
     <div class="section" id="board">
         <div class="section-header">
             <h2>Board Composition &amp; Protective Provisions</h2>
         </div>
-        <p class="section-summary">Who controls the board, and what decisions require investor approval.</p>
+        <p class="section-summary">Who controls the board, and which decisions need investor sign-off even if the board votes yes.</p>
 
-        <p class="finding-why">Board composition determines who has a seat at the table for major decisions. Protective provisions (also called "reserved matters" or "affirmative vote rights") list specific actions that require investor consent — even if the board votes in favor.</p>
-
-        <div class="findings">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">Founder-majority board with reasonable reserved matters</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">Board has 3-5 seats, founders hold the majority. Investor gets 1 board seat (or 1 per lead investor). Reserved matters are limited to capital-protection issues: new share issuance, changes to share rights, related-party transactions above a threshold, sale of the company.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> 3-member board: 2 founder-nominees, 1 investor-nominee. Reserved matters require investor consent for: issuing new shares, changing the Articles, any M&amp;A transaction, related-party transactions above ₹25 lakhs, taking debt above ₹1 Cr.
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">Investor-heavy board or broad reserved matters</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Investor gets 2 seats on a 5-member board (with 1 "independent" director they influence), or reserved matters extend to operational decisions like hiring key employees, changing business plans, or entering new markets.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> 5-member board: 2 founders, 2 investors, 1 "mutually agreed independent." Reserved matters include: hiring/firing any employee above ₹30 LPA, annual budgets, any pivot in business model, any contract above ₹50 lakhs. This gives the investor a veto on day-to-day operations.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">Quorum trap or investor-majority board</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">Board quorum requires the investor nominee to be present — meaning no board meeting can happen without the investor. Or the investor gets outright majority on the board. Either way, you've lost control of your own company.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> "Board quorum shall require the presence of at least one Investor Director." If the investor stops showing up, your board is paralyzed — no resolutions, no bank signatories, no statutory filings. This is a governance trap.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> Losing board control at a seed or Series A stage is premature. Broad reserved matters turn every operational decision into a negotiation. And quorum traps can paralyze your company if the relationship sours. Keep reserved matters to genuine capital-protection issues, and ensure you can hold valid board meetings independently.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>Founder-majority board (2 of 3). 8-12 reserved matters on capital protection</td><td>2 founder + 1 investor directors. Veto on: new shares, M&amp;A, debt &gt; ₹1 Cr</td><td>You run the company; investor protects their capital</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>Investor picks "independent" tiebreaker. 20+ operational vetoes</td><td>2F + 2I + 1 "mutual" (investor picks). Veto on: hires &gt; ₹30 LPA, any pivot, contracts &gt; ₹50L</td><td>Day-to-day operations need investor approval</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>Quorum requires investor director to be present</td><td>Board meetings invalid without investor. No resolutions, no bank signatories</td><td>If investor ghosts, your company is paralyzed</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">Keep reserved matters to genuine capital protection (8-12 items). Reject quorum traps — you must be able to hold valid meetings independently.</p>
     </div>
 
     <!-- ESOP -->
@@ -694,56 +278,27 @@ body {
         <div class="section-header">
             <h2>ESOP Pool</h2>
         </div>
-        <p class="section-summary">How the employee stock option pool affects founder dilution.</p>
-
-        <p class="finding-why">Almost every term sheet will require an ESOP (Employee Stock Option Pool) to attract and retain talent. The key question is: <strong>who bears the dilution</strong> — everyone proportionally, or only the founders?</p>
+        <p class="section-summary">The employee stock option pool dilutes someone — the key question is whether it dilutes everyone equally or only founders.</p>
 
         <div class="math-box">
             <strong>Pre-money ESOP carve-out (dilutes only founders):</strong><br>
             Pre-money ₹40 Cr, ESOP 10%, Investment ₹10 Cr<br>
-            Founders effectively own: 90% of pre-money = ₹36 Cr / ₹50 Cr post = 72%<br>
-            Investor owns: ₹10 Cr / ₹50 Cr = 20%<br>
-            ESOP: 10% &times; (₹40 Cr / ₹50 Cr) = 8%<br><br>
-            <strong>Post-money ESOP (dilutes everyone equally):</strong><br>
-            Pre-money ₹40 Cr, Investment ₹10 Cr, then 10% ESOP carved out<br>
-            Founders own: 80% &times; 90% = 72% — same here, but investor also dilutes to 18%
+            Founders effectively own: 90% of ₹40 Cr / ₹50 Cr = 72%<br>
+            Investor owns: 20% &nbsp;|&nbsp; ESOP: 8%<br><br>
+            <strong>Post-money ESOP (dilutes everyone):</strong><br>
+            Same numbers but ESOP carved after investment<br>
+            Founders: 72% &nbsp;|&nbsp; Investor: 18% &nbsp;|&nbsp; ESOP: 10%
         </div>
 
-        <div class="findings" style="margin-top: 12px;">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">Reasonable ESOP pool (10-15%) already included</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">ESOP pool of 10-15% is included in the pre-money valuation, and the current pool already covers most of it. Only a small top-up is needed. The cap table is clear about how this affects everyone.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> "Pre-money of ₹40 Cr on a fully-diluted basis, including the existing ESOP pool of 8% to be topped up to 12%." Only 4% additional dilution from the existing cap table.
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">Large ESOP expansion pre-money</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Investor asks to expand ESOP from 5% to 20% — all pre-money. The 15% expansion comes entirely out of founder equity. The investor's percentage is unaffected.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> "ESOP pool to be expanded to 20% pre-money (currently 5%)." This 15% expansion at a ₹40 Cr pre-money is equivalent to a ₹6 Cr valuation cut for founders — a hidden discount the investor gets for free.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">Unallocated ESOP with investor veto on grants</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">A large ESOP pool is created but requires investor approval for every grant. The unallocated shares sit in the pool diluting founders, while the investor controls who gets options and when.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> "20% ESOP pool, all grants require prior written consent of Investor." Founders bear the dilution but don't control the allocation. If you and the investor disagree about a key hire's package, you're stuck.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> ESOP is essential to hire great people, but an oversized pre-money pool is a hidden valuation discount for the investor. Negotiate the pool size based on your actual hiring plan for the next 18-24 months, not the investor's wish list. And always retain control over individual grant decisions.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>10-15% pool, mostly existing, small top-up needed</td><td>Existing 8% ESOP → top-up to 12%. Only 4% new dilution</td><td>Right-sized for 18-24 month hiring plan</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>Large expansion pre-money (5% → 20%) — investor's % unaffected</td><td>15% expansion at ₹40 Cr pre-money = ~₹6 Cr hidden valuation cut</td><td>All dilution falls on founders only</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>Large pool with investor veto on every individual grant</td><td>20% pool created but all grants need investor written consent</td><td>You bear the dilution but don't control allocation</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">Size the ESOP pool to your actual hiring plan, not the investor's wish list. Always retain control over individual grant decisions.</p>
     </div>
 
     <!-- Founder Vesting -->
@@ -751,45 +306,17 @@ body {
         <div class="section-header">
             <h2>Founder Vesting &amp; Lock-in</h2>
         </div>
-        <p class="section-summary">How your own shares can be at risk if you leave the company.</p>
+        <p class="section-summary">"Reverse vesting" means you can lose your own shares if you leave before a set period — the details matter enormously.</p>
 
-        <p class="finding-why">Investor-imposed "reverse vesting" means that even though you already own your shares, you agree to give some back if you leave before a certain period. This protects the investor from a founder walking away with a large stake. It's reasonable in principle but the details matter enormously.</p>
-
-        <div class="findings">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">3-4 year vesting, single-trigger acceleration</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">Founder shares vest over 3-4 years with a 1-year cliff. Credit given for time already spent building the company. Acceleration on change-of-control (if the company is acquired, your shares fully vest). Good leaver/bad leaver distinction is clear.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> "Founder shares vest over 4 years from the date of incorporation (giving credit for 18 months already served). 1-year cliff, monthly vesting thereafter. 100% acceleration on change of control. Good leaver: retains all vested shares."
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">Vesting restarts, narrow good-leaver definition</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Vesting clock starts from the date of investment (ignoring prior years of work). "Good leaver" is defined very narrowly — even being fired without cause might trigger "bad leaver" provisions with a forced buyback at nominal value.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> "Founder shares vest over 4 years from the date of this Agreement. Bad leaver: Company has the right to buyback all unvested shares at face value (₹10/share)." If you've been building for 2 years, the clock resets and you're treated as if you just started.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">Vesting on vested shares, personal penalty clauses</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">Even shares you've already "vested" can be clawed back. Or the bad leaver clause requires you to sell shares at face value (₹10/share) instead of fair market value. Personal financial penalties beyond share forfeiture.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> "Bad leaver (including voluntary resignation for any reason): all shares (vested and unvested) to be transferred to the Company at par value." This means if you resign after 3 years to start something new, you lose everything — even shares you rightfully earned.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> Vesting terms determine what happens to your single largest asset if your relationship with the investor sours, or if you're asked to leave. Insist on credit for time served, a clear good-leaver definition (at minimum: termination without cause, disability, death), and buyback at fair market value — never face value.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>3-4 yr vest with credit for time already served. Acceleration on acquisition</td><td>4 yr from incorporation (credit 18 months). 100% accelerate on change of control. Good leaver retains vested shares</td><td>Fair — recognizes prior work, clear good-leaver at FMV</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>Vesting restarts from investment date. Narrow good-leaver definition</td><td>4 yr from signing — 2 years of prior work ignored. Bad leaver buyback at ₹10/share (par value)</td><td>Clock reset erases your sweat-equity contribution</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>Clawback of already-vested shares. All shares at par value on departure</td><td>Resign after 3 years → all shares (vested + unvested) transferred at ₹10/share</td><td>You lose everything if you leave for any reason</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">Insist on credit for time served, a clear good-leaver definition (at minimum: termination without cause, disability, death), and buyback at FMV — never par value.</p>
     </div>
 
     <!-- Non-Compete -->
@@ -797,45 +324,17 @@ body {
         <div class="section-header">
             <h2>Non-Compete &amp; Non-Solicitation</h2>
         </div>
-        <p class="section-summary">Restrictions on what you can do during and after your time at the company.</p>
+        <p class="section-summary">Restrictions on what you can do during and after your time at the company. Post-employment non-competes are generally void under Section 27, Indian Contract Act — but investors use indirect enforcement.</p>
 
-        <p class="finding-why"><strong>Indian law context:</strong> Section 27 of the Indian Contract Act, 1872 makes agreements "in restraint of trade" void. This means post-termination non-competes are generally unenforceable in India (unlike the US). However, during-employment non-competes and non-solicitation clauses are valid, and investors still include post-termination restrictions as a deterrent.</p>
-
-        <div class="findings">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">During-term non-compete, reasonable non-solicit</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">Non-compete applies during your employment only. Non-solicitation of employees/customers for 12 months post-departure. Both limited to the company's specific business domain.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> "During the Founder's engagement with the Company: shall not engage in any Competing Business. For 12 months post-departure: shall not solicit any employee or customer of the Company."
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">Broad post-termination non-compete</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Non-compete extends 2+ years post-departure and covers a broad definition of "competing business." While likely unenforceable under Section 27, litigation risk and the cost of defending yourself can be a deterrent.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> "For 24 months after departure, Founder shall not directly or indirectly engage in, advise, or invest in any business in the technology sector in India." The definition of "technology sector" is so broad it could cover almost anything.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">Non-compete tied to share forfeiture or penalty</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">Violating the non-compete triggers a financial penalty or forces you to sell your vested shares at nominal value. This makes the otherwise-unenforceable non-compete de facto enforceable — the penalty is in the shareholder agreement, not the employment contract.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> "Breach of non-compete by Founder shall be deemed a Bad Leaver event, requiring transfer of all shares at par value, plus liquidated damages of ₹1 Cr." Even though Section 27 says the non-compete is void, the linked financial penalty creates real enforcement power.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> While Indian courts generally won't enforce post-employment non-competes, investors use indirect enforcement mechanisms (share forfeiture, liquidated damages) to achieve the same effect. Pay close attention to the linkage between non-compete breach and your shares. Non-solicitation is generally enforceable and reasonable — focus your negotiation energy on the non-compete terms.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>During-term non-compete only. 12-month non-solicit post-departure</td><td>No competing business while employed. 12-month employee/customer non-solicit</td><td>Reasonable and legally enforceable</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>24-month post-departure non-compete, broad "technology sector" scope</td><td>Can't work in "technology" for 2 years. Likely unenforceable but litigation risk</td><td>Deters you via legal costs even if you'd win</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>Non-compete breach triggers share forfeiture + liquidated damages</td><td>Breach = Bad Leaver (all shares at ₹10) + ₹1 Cr damages</td><td>Makes unenforceable clause de facto enforceable via financial penalty</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">During-term non-compete is fine. Resist any linkage between post-departure non-compete and share forfeiture — that's backdoor enforcement of an unenforceable clause.</p>
     </div>
 
     <!-- Conditions Precedent -->
@@ -843,45 +342,17 @@ body {
         <div class="section-header">
             <h2>Conditions Precedent</h2>
         </div>
-        <p class="section-summary">What must happen before the investment actually closes.</p>
+        <p class="section-summary">The to-do list before the investor must wire money — vague CPs are escape hatches that let the investor walk away.</p>
 
-        <p class="finding-why">Conditions Precedent (CPs) are a list of things that must be done before the investor is obligated to wire the money. Some are standard (board approvals, regulatory filings). Others can be open-ended escape hatches that let the investor walk away even after signing the term sheet.</p>
-
-        <div class="findings">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">Specific, achievable CPs</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">CPs are concrete, within the company's control, and have a clear timeline. Examples: board approval, shareholder approval, conversion of company to private limited (if needed), opening of a designated bank account.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> "CPs: (1) Board resolution approving the transaction, (2) Shareholders' resolution for allotment of CCPS, (3) Filing of MGT-14 with ROC, (4) KYC documents of the Company. Long-stop date: 45 days from execution."
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">Vague or subjective CPs</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">CPs include "satisfactory completion of due diligence" or "no material adverse change" — subjective conditions that the investor can use to delay or exit the deal.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> "CPs: (1) Completion of legal, financial, and tax due diligence to the satisfaction of the Investor, (2) No Material Adverse Effect on the Company." "Satisfaction of the Investor" is entirely subjective — they can always find something unsatisfactory.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">CPs that require third-party action</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">CPs include things outside your control — regulatory approvals that may take months, consent from parties who have no obligation to give it, or resolution of pending litigation.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> "CPs: (1) RBI approval for foreign investment (if applicable), (2) Resolution of all pending litigation, (3) Consent of all existing shareholders including angel investors." Any of these can stall the deal indefinitely, and the investor bears no risk during the wait.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> Vague CPs give the investor an option, not an obligation. You've given them exclusivity, you've told the market you're raising, your other investors know — and the investor can still walk away citing an unsatisfied CP. Push for specific, time-bound CPs and a short long-stop date (30-45 days).
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>Specific CPs (board approval, filings) with 45-day long-stop</td><td>Board resolution, shareholder approval, MGT-14, KYC. Long-stop: 45 days</td><td>Clear, achievable, time-bound</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>Subjective CPs ("satisfactory diligence"), no long-stop date</td><td>"Due diligence to investor's satisfaction" + "no material adverse change"</td><td>Investor can delay or exit the deal at will</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>CPs requiring third-party action outside your control</td><td>"Resolve all pending litigation" + "consent of all existing angels"</td><td>Deal can stall indefinitely. Investor bears no risk while waiting</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">Push for specific, time-bound CPs and a 30-45 day long-stop date. Never accept "satisfactory diligence" as a CP — it's a free exit ramp for the investor.</p>
     </div>
 
     <!-- Exclusivity -->
@@ -889,45 +360,17 @@ body {
         <div class="section-header">
             <h2>Exclusivity / No-Shop</h2>
         </div>
-        <p class="section-summary">The binding clause that prevents you from talking to other investors.</p>
+        <p class="section-summary">The binding clause that prevents you from talking to other investors — reasonable in principle, but duration is everything.</p>
 
-        <p class="finding-why">The exclusivity (or "no-shop") clause is typically <strong>binding</strong> even though the rest of the term sheet is non-binding. During the exclusivity period, you cannot solicit, negotiate with, or provide information to other potential investors. This is reasonable — the investor needs time to do diligence without worrying you'll take a better offer. But the duration matters.</p>
-
-        <div class="findings">
-            <div class="finding severity-standard">
-                <div class="finding-header">
-                    <span class="finding-title">30-45 days exclusivity</span>
-                    <span class="severity-tag tag-standard">Standard</span>
-                </div>
-                <p class="finding-why">A 30-45 day exclusivity window gives the investor enough time to complete diligence and draft definitive agreements. Automatically expires — no extension without mutual consent.</p>
-                <div class="example-standard">
-                    <strong>Example:</strong> "For a period of 30 days from the date of this Term Sheet, the Company and the Founders shall not solicit, encourage, or enter into discussions with any third party regarding any financing transaction."
-                </div>
-            </div>
-            <div class="finding severity-aggressive">
-                <div class="finding-header">
-                    <span class="finding-title">60-90 days or auto-extending exclusivity</span>
-                    <span class="severity-tag tag-aggressive">Aggressive</span>
-                </div>
-                <p class="finding-why">Longer exclusivity means more time where you can't pursue alternatives. Auto-extension clauses (e.g., "extends by 30 days if diligence is ongoing") can lock you in for months.</p>
-                <div class="example-aggressive">
-                    <strong>Example:</strong> "Exclusivity of 60 days, automatically extended by 30 days if due diligence has not been completed." This can easily become 90+ days — nearly a quarter of the year where your fundraise is on hold.
-                </div>
-            </div>
-            <div class="finding severity-unusual">
-                <div class="finding-header">
-                    <span class="finding-title">Exclusivity with penalties or break fees</span>
-                    <span class="severity-tag tag-unusual">Unusual</span>
-                </div>
-                <p class="finding-why">A financial penalty or "break fee" if you terminate exclusivity or take another offer. This is extremely unusual for venture deals in India and creates an asymmetric burden — the investor can walk away from the non-binding term sheet, but you can't.</p>
-                <div class="example-unusual">
-                    <strong>Example:</strong> "If the Company breaches exclusivity, the Company shall reimburse the Investor for all diligence costs (up to ₹25 lakhs) and pay a break fee of ₹50 lakhs." This turns a non-binding term sheet into a quasi-binding commitment for the founder.
-                </div>
-            </div>
-        </div>
-        <div class="why-box">
-            <strong>Why it matters:</strong> Time is your scarcest resource during a fundraise. A long exclusivity window means your other conversations go cold, your team is distracted, and the investor has all the leverage. Keep it to 30-45 days, resist auto-extensions, and never accept a break fee — the term sheet is supposed to be non-binding for both sides.
-        </div>
+        <table class="compare-table">
+            <thead><tr><th></th><th>What It Looks Like</th><th>₹ Example</th><th>Founder Impact</th></tr></thead>
+            <tbody>
+                <tr class="row-standard"><td class="severity-cell"><span class="dot green"></span> Standard</td><td>30-45 days, auto-expires, no extension</td><td>30-day no-shop from term sheet date. Expires automatically</td><td>Enough time for diligence, then you're free</td></tr>
+                <tr class="row-aggressive"><td class="severity-cell"><span class="dot orange"></span> Aggressive</td><td>60-90 days with auto-extension clause</td><td>60 days + 30-day auto-extension "if diligence ongoing"</td><td>Locks you out of the market for a full quarter</td></tr>
+                <tr class="row-unusual"><td class="severity-cell"><span class="dot red"></span> Unusual</td><td>Exclusivity with break fee / diligence reimbursement</td><td>90 days + ₹50 lakh break fee + ₹25 lakh diligence cost reimbursement</td><td>Non-binding term sheet becomes quasi-binding for you only</td></tr>
+            </tbody>
+        </table>
+        <p class="takeaway">30-45 days, no auto-extensions, no break fees. The term sheet is supposed to be non-binding for both sides — don't let exclusivity penalties change that.</p>
     </div>
 
     <!-- Checklist -->
