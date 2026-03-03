@@ -411,6 +411,33 @@ def feedback_clear() -> None:
 # ── Preferences ────────────────────────────────────────────────
 
 
+@cli.command("claude-export")
+@click.option("--output-dir", "-o", type=click.Path(path_type=Path), default=None, help="Output directory (default: MyPreferences/claude-project/).")
+def claude_export(output_dir: Path | None) -> None:
+    """Generate Claude Project files for using LegalOS on claude.ai."""
+    from legalos.profile.claude_export import export_claude_project
+
+    try:
+        paths = export_claude_project(output_dir=output_dir)
+    except FileNotFoundError as e:
+        print_error(str(e))
+        raise SystemExit(1)
+    except Exception as e:
+        print_error(f"Export failed: {e}")
+        raise SystemExit(1)
+
+    print_success("Claude Project files generated:")
+    for p in paths:
+        console.print(f"  {p}")
+
+    console.print()
+    console.print("[bold cyan]Setup your Claude Project:[/]")
+    console.print("  1. Go to claude.ai and create a new Project")
+    console.print(f"  2. Paste the contents of [bold]{paths[0]}[/] into custom instructions")
+    console.print(f"  3. Upload the other {len(paths) - 1} files as knowledge files")
+    console.print("  4. Upload your legal document and start chatting")
+
+
 @cli.command()
 @click.option("--no-browser", is_flag=True, help="Don't auto-open the HTML in browser.")
 @click.option("--output-dir", "-o", type=click.Path(path_type=Path), default=None, help="Output directory (default: MyPreferences/).")

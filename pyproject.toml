@@ -29,3 +29,6 @@ legalos = "legalos.cli:cli"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/legalos"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"claude-project" = "legalos/claude_project"

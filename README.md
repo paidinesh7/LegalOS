@@ -307,6 +307,38 @@ legalos preferences
 
 The file is plain Markdown — you can also edit the "Additional Notes" section at the bottom to add custom instructions that persist across regenerations.
 
+For a more complete setup on Claude.ai, see the next section.
+
+---
+
+## Using LegalOS on Claude.ai
+
+You can use the LegalOS analysis framework directly inside a Claude Project on [claude.ai](https://claude.ai) — no installation, no API key, no terminal required.
+
+### Quick setup (no CLI)
+
+1. Go to [claude.ai](https://claude.ai) and create a new Project
+2. Open [`claude-project/instructions.md`](claude-project/instructions.md) and paste its contents into the Project's custom instructions
+3. Upload these 3 files from [`claude-project/`](claude-project/) as knowledge files:
+   - `analysis_checklist.md` — 6 section analysis checklists
+   - `doc_type_guidance.md` — document-type emphasis areas
+   - `scoring_rubric.md` — severity levels, impact scores, output formats
+4. Upload your legal document (PDF or Word) and start chatting
+
+### Personalized setup (CLI users)
+
+If you've built up a profile, feedback patterns, and learnings in LegalOS:
+
+```
+legalos claude-export
+```
+
+This generates personalized versions of all the files in `MyPreferences/claude-project/`, including your company profile, risk tolerance, watchlist, and accumulated learnings baked into the instructions. Upload those files instead.
+
+### What you get
+
+The same senior Indian startup lawyer analysis framework — section checklists, severity scoring, exit waterfall, negotiation priorities — delivered conversationally inside Claude instead of as an HTML report.
+
 ---
 
 ## Disclaimer
