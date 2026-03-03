@@ -17,6 +17,15 @@ from legalos.utils.progress import (
 )
 
 
+def _auto_update_preferences() -> None:
+    """Silently regenerate MyPreferences/ after any data change."""
+    try:
+        from legalos.profile.preferences_export import write_preferences
+        write_preferences()
+    except Exception:
+        pass
+
+
 @click.group()
 @click.version_option(package_name="legalos")
 def cli() -> None:
@@ -177,6 +186,7 @@ def profile_set(key: str, value: str) -> None:
 
     path = save_profile(p)
     print_success(f"Set {key} = {value} (saved to {path})")
+    _auto_update_preferences()
 
 
 @profile.command("clear")
@@ -186,6 +196,7 @@ def profile_clear() -> None:
 
     if delete_profile():
         print_success("Profile deleted.")
+        _auto_update_preferences()
     else:
         console.print("[dim]No profile to delete.[/]")
 
@@ -214,6 +225,7 @@ def profile_import(file: Path) -> None:
         p = import_profile(file)
         name = p.company.name or "imported profile"
         print_success(f"Imported profile: {name}")
+        _auto_update_preferences()
     except Exception as e:
         print_error(f"Import failed: {e}")
         raise SystemExit(1)
@@ -272,6 +284,7 @@ def deal_add(name: str) -> None:
 
     path = save_deal(deal_profile)
     print_success(f"Deal '{name}' saved to {path}")
+    _auto_update_preferences()
 
 
 @deal.command("remove")
@@ -282,6 +295,7 @@ def deal_remove(name: str) -> None:
 
     if delete_deal(name):
         print_success(f"Deal '{name}' removed.")
+        _auto_update_preferences()
     else:
         print_error(f"Deal '{name}' not found.")
 
@@ -355,6 +369,7 @@ def feedback_import(file: Path) -> None:
         item = import_report_feedback(file)
         n_fp = len(item.false_positives)
         print_success(f"Imported feedback: {n_fp} finding(s) marked as not relevant")
+        _auto_update_preferences()
     except Exception as e:
         print_error(f"Import failed: {e}")
         raise SystemExit(1)
@@ -379,6 +394,7 @@ def feedback_submit(up_titles: str, down_titles: str, doc_name: str) -> None:
     n_fp = len(item.false_positives)
     total = len(up_list) + len(down_list)
     print_success(f"Feedback saved: {total} finding(s) rated ({n_fp} marked not relevant)")
+    _auto_update_preferences()
 
 
 @feedback_group.command("clear")
@@ -498,6 +514,7 @@ def kb_add() -> None:
     entry = offer_manual_learning()
     if entry:
         print_success(f"Learning '{entry.title}' saved (ID: {entry.id})")
+        _auto_update_preferences()
     else:
         console.print("[dim]No learning added.[/]")
 
@@ -567,6 +584,7 @@ def kb_update(entry_id: str) -> None:
     updated = update_learning(entry_id, updates)
     if updated:
         print_success(f"Entry '{entry_id}' updated.")
+        _auto_update_preferences()
     else:
         print_error("Update failed.")
 
@@ -579,6 +597,7 @@ def kb_remove(entry_id: str) -> None:
 
     if delete_learning(entry_id):
         print_success(f"Entry '{entry_id}' removed.")
+        _auto_update_preferences()
     else:
         print_error(f"Entry '{entry_id}' not found.")
 
@@ -612,6 +631,7 @@ def kb_import(file: Path) -> None:
     try:
         count = import_learnings(file)
         print_success(f"Imported {count} new learning(s)")
+        _auto_update_preferences()
     except Exception as e:
         print_error(f"Import failed: {e}")
         raise SystemExit(1)
@@ -630,6 +650,7 @@ def kb_clear() -> None:
 
     if clear_learnings():
         print_success("All learnings cleared.")
+        _auto_update_preferences()
     else:
         console.print("[dim]No learnings to clear.[/]")
 
@@ -896,6 +917,8 @@ def analyze(
                 )
             manual = offer_manual_learning()
 
+            _auto_update_preferences()
+
     else:
         # Quick scan (default) — 1 API call
         from legalos.analysis.engine import run_quick_analysis
@@ -949,6 +972,8 @@ def analyze(
             )
             if verbose:
                 print_cost(client.usage.summary(model_id))
+
+        _auto_update_preferences()
 
         # Suggest deep dive
         console.print()
